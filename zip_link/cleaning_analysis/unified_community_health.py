@@ -24,7 +24,13 @@ def process_health_data(input_file):
     df = df.dropna(subset=["Health Center Facility"])
     # Fill NaN values in the rest of the DataFrame with an empty string
     df = df.fillna("")
-    
+    # Remove trailing and leading spaces
+    df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+    # Get phone number 
+    df['Telephone Number'] = df['Telephone Number'].apply(
+    lambda x: re.sub(r'\s+', '', x) if pd.notnull(x) else ''  # Remove all spaces
+    )
+    df['Telephone Number'] = df['Telephone Number'].str.extract(r"(\d{3}-\d{3}-\d{4})")
     # Extract any 5-digit ZIP code using regex
     df["Zip Code"] = df["Address"].apply(
         lambda x: re.search(r"\b\d{5}\b", x).group() if re.search(r"\b\d{5}\b", x) else None
@@ -42,12 +48,19 @@ def get_hrsa_data(path):
     df_chicago_unique = df_chicago.drop_duplicates(['Health Center Name', 'Operated By', 'ZIP Code', 'Telephone Number']) 
     df_chicago_unique.rename(columns={'ZIP Code': 'Zip Code'}, inplace=True) 
     df_chicago_unique["Zip Code"] = df_chicago_unique["Zip Code"].astype(str).str[:5] # Extract first 5 digits
+    # Remove trailing and leading spaces
+    df_chicago_unique = df_chicago_unique.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+    # Get phone number 
+    df_chicago_unique['Telephone Number'] = df_chicago_unique['Telephone Number'].apply(
+    lambda x: re.sub(r'\s+', '', x) if pd.notnull(x) else ''  # Remove all spaces
+    )    
+    df_chicago_unique['Telephone Number'] = df_chicago_unique['Telephone Number'].str.extract(r"(\d{3}-\d{3}-\d{4})")
     # Subset data and rename columns to standardize with other data source 
     df_chicago_unique = df_chicago_unique[['Health Center Name', 'Street Address', 'Telephone Number', 'Zip Code']]
     df_chicago_unique.columns = ['Health Center Facility', 'Address', 'Telephone Number', 'Zip Code']
     return df_chicago_unique
 
-def fuzzy_match(df, threshold=0.9):
+def fuzzy_match(df, threshold=0.85):
     """Deduplicates health centers within combined dataset using fuzzy matching."""
     matched_indices = set()
     records = df.to_dict(orient="records")
@@ -64,9 +77,11 @@ def fuzzy_match(df, threshold=0.9):
             # Compare health center names and addresses
             name_sim = jellyfish.jaro_winkler_similarity(rec1["Health Center Facility"], rec2["Health Center Facility"])
             addr_sim = jellyfish.jaro_winkler_similarity(rec1["Address"], rec2["Address"]) if rec1["Address"] and rec2["Address"] else 0
+            telephone_sim = rec1["Telephone Number"] == rec2["Telephone Number"]
+
             
             # If similarity is above threshold for both entities, mark as duplicate
-            if name_sim > threshold and addr_sim > threshold:
+            if (name_sim > threshold or addr_sim > threshold) and telephone_sim:
                 matched_indices.add(j)
         
         unique_records.append(rec1)  # Keep the first unique record
