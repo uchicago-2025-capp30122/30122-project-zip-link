@@ -51,13 +51,13 @@ def scrape_zipatlas(url, output_csv):
 
 # List of URLs and corresponding output filenames
 urls = [
-    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/lowest-property-prices.htm", "zipatlas_data/median_property_prices.csv"),
-    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/lowest-housing-costs.htm", "zipatlas_data/median_housing_costs.csv"),
-    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-owner-occupied-housing-costs.htm", "zipatlas_data/owner_median_housing_costs.csv"),
-    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-renter-occupied-housing-costs.htm", "zipatlas_data/renter_median_housing_costs.csv"),
-    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-housing-cost-as-percentage-of-income.htm", "zipatlas_data/housing_cost_perc_income.csv"),
-    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-unemployment-rate.htm", "zipatlas_data/unemployment_rates.csv"),
-    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-poverty.htm", "zipatlas_data/poverty_levels.csv")
+    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/lowest-property-prices.htm", "/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/median_property_prices.csv"),
+    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/lowest-housing-costs.htm", "/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/median_housing_costs.csv"),
+    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-owner-occupied-housing-costs.htm", "/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/owner_median_housing_costs.csv"),
+    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-renter-occupied-housing-costs.htm", "/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/renter_median_housing_costs.csv"),
+    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-housing-cost-as-percentage-of-income.htm", "/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/housing_cost_perc_income.csv"),
+    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-unemployment-rate.htm", "/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/unemployment_rates.csv"),
+    ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-poverty.htm", "/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/poverty_levels.csv")
 ]
 
 # Scrape each URL
@@ -65,10 +65,10 @@ for url, filename in urls:
     scrape_zipatlas(url, filename)
 
 def join_data_on_zip():
-    filenames = ["zipatlas_data/median_property_prices.csv", "zipatlas_data/median_housing_costs.csv",
-                 "zipatlas_data/owner_median_housing_costs.csv","zipatlas_data/renter_median_housing_costs.csv",
-                 "zipatlas_data/housing_cost_perc_income.csv","zipatlas_data/poverty_levels.csv",
-                 "zipatlas_data/unemployment_rates.csv"]
+    filenames = ["/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/median_property_prices.csv", "/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/median_housing_costs.csv",
+                 "/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/owner_median_housing_costs.csv","/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/renter_median_housing_costs.csv",
+                 "/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/housing_cost_perc_income.csv","/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/poverty_levels.csv",
+                 "/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/raw/zipatlas_data/unemployment_rates.csv"]
     
     dfs = [pd.read_csv(f) for f in filenames]
 
@@ -76,7 +76,8 @@ def join_data_on_zip():
     lambda left, right: pd.merge(left, right, on="Zip Code", how="inner"),
     dfs)
 
-    df_merged.to_csv("zipatlas.csv", index=False)
+    # df_merged.to_csv("zipatlas.csv", index=False)
+    return df_merged
 
 join_data_on_zip()
 
@@ -84,11 +85,12 @@ join_data_on_zip()
 
 def zip_health_data():
     # Load the datasets into DataFrames
-    zipatlas_df = pd.read_csv("zipatlas.csv")
-    comm_health_df = pd.read_csv("unified_community_health_count.csv")
+    #zipatlas_df = pd.read_csv("zipatlas.csv")
+    zipatlas_df = join_data_on_zip()
+    comm_health_df = pd.read_csv("/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/preprocessed/unified_community_health_count.csv")
     merged_data = pd.merge(zipatlas_df, comm_health_df, on="Zip Code", how="left")
     merged_data['cnt_comm_health_ctr'] = merged_data['cnt_comm_health_ctr'].fillna(0)
-    merged_data.to_csv("zipatlas_health.csv", index=False)
+    merged_data.to_csv("/home/vyshnaviv/capp122/30122-project-zip-link/zip_link/data/preprocessed/zipatlas_health.csv", index=False)
     print(f"Zip and Community Health Centre Data successfully saved.")
 
 zip_health_data()
