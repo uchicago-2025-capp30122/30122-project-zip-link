@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
   "geopandas>=1.0.1",
-  "pyproj>=>=3.7.1",
+  "pyproj>=3.7.1",
   "httpx>=0.28.1",
   "requests>2.28.1",
   "ipdb>=0.13.13",
