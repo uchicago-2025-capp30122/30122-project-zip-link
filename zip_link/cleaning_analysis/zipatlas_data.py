@@ -91,9 +91,7 @@ def zip_health_bulk_data():
     comm_health_df = pd.read_csv("../data/preprocessed/unified_community_health_count.csv")
     parks_count = clean_parks_data("../data/raw/parks/CPD_Parks_2025.csv")
     grocery_store_count = clean_grocery_data("../data/raw/grocery_stores/grocery_stores_data.csv")
-    merged_health_data = pd.merge(zipatlas_df, comm_health_df, on="Zip Code", how="left")
-    merged_health_data['cnt_comm_health_ctr'] = merged_health_data['cnt_comm_health_ctr'].fillna(0)
-    # merged_data.to_csv("../data/preprocessed/zipatlas_health.csv", index=False)
+
     dfs = [zipatlas_df, comm_health_df, parks_count, grocery_store_count]
     dfs = [df.astype({'Zip Code': 'str'}) for df in dfs]
     # Perform left joins iteratively
