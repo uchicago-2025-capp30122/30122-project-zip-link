@@ -36,7 +36,14 @@ def clean_grocery_data(path):
     df.to_csv("../data/preprocessed/grocery_store_data.csv", index=False)
     return zip_counts
 
-
+def clean_publictransit_data(path):
+    df = pd.read_csv(path)
+    # Filter relevant Zip Codes
+    df['ZCTA20'] = df['ZCTA20'].astype(str).str[:5].str.zfill(5)
+    df = df[df['ZCTA20'].str.startswith('606')]
+    df= df[['ZCTA20', 'COUNT_NTM_STOPS']]
+    df.columns = ['Zip Code', 'num_public_transit_stops']
+    return df
 
 
 

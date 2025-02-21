@@ -3,7 +3,7 @@ import lxml.html as lh
 import pandas as pd
 import re
 from functools import reduce
-from zip_link.cleaning_analysis.bulk_data_processing import clean_parks_data, clean_grocery_data
+from zip_link.cleaning_analysis.bulk_data_processing import clean_parks_data, clean_grocery_data, clean_publictransit_data
 
 
 def scrape_zipatlas(url, output_csv):
@@ -91,8 +91,9 @@ def zip_health_bulk_data():
     comm_health_df = pd.read_csv("../data/preprocessed/unified_community_health_count.csv")
     parks_count = clean_parks_data("../data/raw/parks/CPD_Parks_2025.csv")
     grocery_store_count = clean_grocery_data("../data/raw/grocery_stores/grocery_stores_data.csv")
+    public_transit_count = clean_publictransit_data("../data/raw/public_transit/publictransit_2024.csv")
 
-    dfs = [zipatlas_df, comm_health_df, parks_count, grocery_store_count]
+    dfs = [zipatlas_df, comm_health_df, parks_count, grocery_store_count, public_transit_count]
     dfs = [df.astype({'Zip Code': 'str'}) for df in dfs]
     # Perform left joins iteratively
     final_df = reduce(lambda left, right: pd.merge(left, right, on='Zip Code', how='left'), dfs)
