@@ -3,6 +3,7 @@ import lxml.html as lh
 import pandas as pd
 import re
 from functools import reduce
+from zip_link.cleaning_analysis.bulk_data_processing import clean_parks_data, clean_grocery_data
 
 
 def scrape_zipatlas(url, output_csv):
@@ -83,15 +84,25 @@ join_data_on_zip()
 
 # Merge all data - ZipAtlas and Community Health Centre Data
 
-def zip_health_data():
+def zip_health_bulk_data():
     # Load the datasets into DataFrames
     #zipatlas_df = pd.read_csv("zipatlas.csv")
     zipatlas_df = join_data_on_zip()
     comm_health_df = pd.read_csv("../data/preprocessed/unified_community_health_count.csv")
-    merged_data = pd.merge(zipatlas_df, comm_health_df, on="Zip Code", how="left")
-    merged_data['cnt_comm_health_ctr'] = merged_data['cnt_comm_health_ctr'].fillna(0)
-    merged_data.to_csv("../data/preprocessed/zipatlas_health.csv", index=False)
-    print(f"Zip and Community Health Centre Data successfully saved.")
+    parks_count = clean_parks_data("../data/raw/parks/CPD_Parks_2025.csv")
+    grocery_store_count = clean_grocery_data("../data/raw/grocery_stores/grocery_stores_data.csv")
+    merged_health_data = pd.merge(zipatlas_df, comm_health_df, on="Zip Code", how="left")
+    merged_health_data['cnt_comm_health_ctr'] = merged_health_data['cnt_comm_health_ctr'].fillna(0)
+    # merged_data.to_csv("../data/preprocessed/zipatlas_health.csv", index=False)
+    dfs = [zipatlas_df, comm_health_df, parks_count, grocery_store_count]
+    dfs = [df.astype({'Zip Code': 'str'}) for df in dfs]
+    # Perform left joins iteratively
+    final_df = reduce(lambda left, right: pd.merge(left, right, on='Zip Code', how='left'), dfs)
+    final_df = final_df.fillna(0)
+    final_df.to_csv("../data/preprocessed/zipatlas_bulk_merge.csv", index=False)
+    print(f"Zip and Bulk Data merged and successfully saved.")
 
-zip_health_data()
+zip_health_bulk_data()
+
+
 
