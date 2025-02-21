@@ -15,7 +15,6 @@ def clean_parks_data(path):
     df = df.drop_duplicates()
     zip_counts = df["Zip Code"].value_counts().reset_index()
     zip_counts.columns = ["Zip Code", "park_count"]
-    print("park count head:", zip_counts.head())
     df.to_csv("../data/preprocessed/park_data.csv", index=False)
     return zip_counts
 
@@ -34,7 +33,6 @@ def clean_grocery_data(path):
     # Calculate Grocery Store Count for each Zip Code
     zip_counts = df["Zip Code"].value_counts().reset_index()
     zip_counts.columns = ["Zip Code", "grocery_store_count"]
-    print("grocery count head:", zip_counts.head())
     df.to_csv("../data/preprocessed/grocery_store_data.csv", index=False)
     return zip_counts
 
