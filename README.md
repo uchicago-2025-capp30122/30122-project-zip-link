@@ -93,13 +93,11 @@ Each data source is processed using different methods:
 3. Accessibility Index Calculation
 The Accessibility Index quantifies service availability by ZIP code. It considers the density of essential services:
 
-\[
-\text{Index} = \frac{\sum{\text{Essential Services Count}}}{\text{ZIP Code Population}}
-\]
+Index = (Total Essential Services Count) / (ZIP Code Population)
 
 Where:
-- Essential Services Count includes hospitals, health centers, grocery stores, public transit stops, schools, and parks.
-- ZIP Code Population is the total number of residents in that ZIP code.
+- Total Essential Services Count includes hospitals, health centers, grocery stores, public transit stops, schools, and parks.
+- ZIP Code Population represents the number of residents in a given ZIP code.
 
 
 ## Correlation with Housing Prices
