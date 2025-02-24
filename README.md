@@ -1,13 +1,6 @@
-# Project Repository Template
-
-This template is intentionally mostly empty, to give you experience starting a project from scratch.
-
-A good first command would be to run `uv init` and add some libraries and tools that you are using.
-
-Before the final milestone submission, you will need to replace this file with a README as described here: https://capp30122.netlify.app/coursework/project/#readmemd
-
-
 # Zip & Link
+
+# Team Members: Vyshnavi Voleti, Nelu Wijegunasekera, Pragya Khanal
 
 ## Overview
 Zip & Link analyzes the relationship between essential services and housing affordability across neighborhoods in Chicago. The project explores how accessibility to key services—such as healthcare, education, public transport, grocery stores, and parks—affects median property prices. The project involves web scraping, data cleaning, and an analysis framework to generate an Accessibility Index for each ZIP code. This index will help users understand the impact of essential services on housing affordability and highlight areas that require better urban planning.
@@ -111,3 +104,4 @@ We have added code for the visualization and generated a map of Chicago ZIP code
 2. Adding more details on hover (e.g., service counts, housing prices).
 3. Changing colors to reflect a gradient for better readability.
 
+# 
