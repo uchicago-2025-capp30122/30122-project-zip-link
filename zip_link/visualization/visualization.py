@@ -8,7 +8,6 @@ import geopandas as gpd
 from shapely.wkt import loads
 
 #DASH APP:
-
 import dash
 from dash import dcc, html
 import plotly.express as px
@@ -20,8 +19,8 @@ import dash_leaflet as dl
 
 #data sources
 #https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-ZIP-Codes-Map/gdcf-axmw 
-#       (CSV to be converted to a shapefile)
-#To run code: uv run python visualization.py
+#To run code:
+# uv run python visualization.py
 
 #CSV ==> ShapeFile
 #loading the data
@@ -86,7 +85,7 @@ app.layout = html.Div([
     dcc.Graph(id="choropleth-map", figure=fig),
 ])
 
-# Run the app
+#running the appi
 if __name__ == "__main__":
     app.run_server(debug=True, port=8051)
 
@@ -110,9 +109,12 @@ app.layout = html.Div([
     ], style={"padding": "20px", "textAlign": "center"}),
 
     #Choropleth Map
+    #to increase the size of the size of the map - not working
+    #how to change the place of the map on the page
     dcc.Graph(id="choropleth-map", style={"height": "70vh", "width": "100%"}),
 
     #map overlay: Dash Leaflet
+    #no change on the visualization
     html.Div([
         dl.Map([
             dl.TileLayer(
@@ -130,6 +132,7 @@ app.layout = html.Div([
 ])
 
 #updating the map based on dropdown selection
+#cannot see the dropdown
 @app.callback(
     Output("choropleth-map", "figure"),
     Input("variable-dropdown", "value")
@@ -156,6 +159,7 @@ def update_map(selected_variable):
         )
     )
     #to add the zip code labels on the map
+    #not visible  on the map
     fig.add_trace(go.Scattergeo(
         lon=merged_gdf["lon"],
         lat=merged_gdf["lat"],
