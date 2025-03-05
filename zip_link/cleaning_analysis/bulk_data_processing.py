@@ -45,7 +45,27 @@ def clean_publictransit_data(path):
     df.columns = ['Zip Code', 'num_public_transit_stops']
     return df
 
-
+def clean_hospital_data(path):
+        """
+        Cleans the hospital data by:
+        - Dropping missing values
+        - Ensuring ZIP code is 5 digits
+        - Removing duplicates
+        - Saving cleaned data to preprocessed folder
+        """
+        df = pd.read_csv(path)
+        df = df.dropna(subset=['Hospital Name', 'ZIP Code'])  # Drop null values
+        df['ZIP Code'] = df['ZIP Code'].astype(str).str[:5].str.zfill(5)  # Standardize ZIP codes
+        df.columns = ['Hospital Name', 'Zip Code']  # Rename columns
+        df = df.drop_duplicates()  # Remove duplicates
+        
+        # Count hospitals per ZIP code
+        Zip_Hospital_Counts = df["Zip Code"].value_counts().reset_index()
+        Zip_Hospital_Counts.columns = ["Zip Code", "hospital_count"]
+        
+        # Save cleaned data
+        df.to_csv("../data/preprocessed/hospital_data.csv", index=False)
+        return Zip_Hospital_Counts
 
 
 
