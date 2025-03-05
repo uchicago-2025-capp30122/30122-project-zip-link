@@ -1,54 +1,51 @@
-import requests
-import lxml.html as lh
-import pandas as pd
-import re
 import os
+import requests
+from lxml import html
+import pandas as pd
 
-def scrape_hospitals(url, output_csv_path):
-    """
-    Scrapes hospital names and ZIP codes from the given URL and saves them as a CSV file.
+# URL of the webpage to scrape
+url = "https://cookcountysheriffil.gov/departments/c-c-s-p-d/cemeteries/hospitals-cook-county/"
 
-    Inputs:
-    - url: The webpage URL to scrape.
-    - output_csv_path: The full path of the output CSV file.
-    """
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    response = requests.get(url, headers=headers)
+# Headers to mimic a real browser request
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+}
 
-    if response.status_code == 200:
-        print("[INFO] Successfully fetched the webpage.")
-        root = lh.fromstring(response.text)
+# Request the webpage with headers
+response = requests.get(url, headers=headers)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Parse the HTML content with lxml
+    tree = html.fromstring(response.content)
+    
+    # Find all hospitals listed under Chicago
+    chicago_hospitals = []
+    
+    # Extract hospital names and ZIP codes from <td> elements
+    for entry in tree.xpath("//td"):  # Adjusted to extract from table cells
+        text = entry.text_content().strip()
+        lines = text.split("\n")
         
-        # Extract hospital names
-        hospital_names = root.xpath('//h3[@class="heading-large"]/text()')
-        print(f"[DEBUG] Found {len(hospital_names)} hospital names.")
-
-        # Extract hospital addresses (which contain ZIP codes)
-        addresses = root.xpath('//div[@class="text-strong text-small"]/text()')
-        print(f"[DEBUG] Found {len(addresses)} addresses.")
-
-        # Extract ZIP codes using regex
-        zip_codes = [re.search(r'\b\d{5}\b', addr).group() if re.search(r'\b\d{5}\b', addr) else 'N/A' for addr in addresses]
-
-        # Create DataFrame
-        df = pd.DataFrame({'Hospital Name': hospital_names, 'Zip Code': zip_codes})
-
-        if df.empty:
-            print("[ERROR] No data extracted. The structure of the webpage may have changed.")
-            return
-
-        # Ensure the directory exists before saving the file
-        os.makedirs(os.path.dirname(output_csv_path), exist_ok=True)
-
-        # Save to CSV
-        df.to_csv(output_csv_path, index=False)
-        print(f"[INFO] Data successfully saved to '{output_csv_path}'.")
-    else:
-        print(f"[ERROR] Failed to fetch {url}, status code: {response.status_code}")
-
-# Define parameters
-url = "https://health.usnews.com/best-hospitals/area/chicago-il"
-output_csv_path = "../data/raw/zipatlas_data/Chicago_hospital.csv"
-
-# Run the scraper
-scrape_hospitals(url, output_csv_path)
+        if "Chicago, Illinois" in text:
+            name = lines[0].strip()
+            zip_code = lines[2].split(" ")[-1]  # Extract ZIP code from "Chicago, Illinois 606XX"
+            chicago_hospitals.append((name, zip_code))
+    
+    # Convert to DataFrame
+    df = pd.DataFrame(chicago_hospitals, columns=["Hospital Name", "ZIP Code"])
+    
+    # Print extracted data for verification
+    print(df.head())
+    
+    # Define output path and ensure directory exists
+    output_dir = "../data/raw/Hospitals"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    output_file = os.path.join(output_dir, "hospitals.csv")
+    df.to_csv(output_file, index=False)
+    
+    print(f"Data saved to {output_file}")
+    
+else:
+    print(f"Failed to retrieve the webpage. Status Code: {response.status_code}")
