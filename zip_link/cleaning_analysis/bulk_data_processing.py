@@ -15,7 +15,7 @@ def clean_parks_data(path):
     df = df.drop_duplicates()
     zip_counts = df["Zip Code"].value_counts().reset_index()
     zip_counts.columns = ["Zip Code", "park_count"]
-    df.to_csv("../data/preprocessed/park_data.csv", index=False)
+    df.to_csv("data/preprocessed/park_data.csv", index=False)
     return zip_counts
 
 def clean_grocery_data(path):
@@ -33,7 +33,7 @@ def clean_grocery_data(path):
     # Calculate Grocery Store Count for each Zip Code
     zip_counts = df["Zip Code"].value_counts().reset_index()
     zip_counts.columns = ["Zip Code", "grocery_store_count"]
-    df.to_csv("../data/preprocessed/grocery_store_data.csv", index=False)
+    df.to_csv("data/preprocessed/grocery_store_data.csv", index=False)
     return zip_counts
 
 def clean_publictransit_data(path):
@@ -64,7 +64,7 @@ def clean_hospital_data(path):
         Zip_Hospital_Counts.columns = ["Zip Code", "hospital_count"]
         
         # Save cleaned data
-        df.to_csv("../data/preprocessed/hospital_data.csv", index=False)
+        df.to_csv("data/preprocessed/hospital_data.csv", index=False)
         return Zip_Hospital_Counts
 
 

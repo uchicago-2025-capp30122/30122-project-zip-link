@@ -4,6 +4,7 @@ import pandas as pd
 import re
 from functools import reduce
 from zip_link.cleaning_analysis.bulk_data_processing import clean_parks_data, clean_grocery_data, clean_publictransit_data, clean_hospital_data
+from zip_link.cleaning_analysis.unified_community_health import join_health_df 
 
 
 def scrape_zipatlas(url, output_csv):
@@ -53,13 +54,13 @@ def scrape_zipatlas(url, output_csv):
 def create_zipatlas_data():
     # List of URLs and corresponding output filenames
     urls = [
-        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/lowest-property-prices.htm", "../data/raw/zipatlas_data/median_property_prices.csv"),
-        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/lowest-housing-costs.htm", "../data/raw/zipatlas_data/median_housing_costs.csv"),
-        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-owner-occupied-housing-costs.htm", "../data/raw/zipatlas_data/owner_median_housing_costs.csv"),
-        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-renter-occupied-housing-costs.htm", "../data/raw/zipatlas_data/renter_median_housing_costs.csv"),
-        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-housing-cost-as-percentage-of-income.htm", "../data/raw/zipatlas_data/housing_cost_perc_income.csv"),
-        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-unemployment-rate.htm", "../data/raw/zipatlas_data/unemployment_rates.csv"),
-        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-poverty.htm", "../data/raw/zipatlas_data/poverty_levels.csv")
+        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/lowest-property-prices.htm", "data/raw/zipatlas_data/median_property_prices.csv"),
+        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/lowest-housing-costs.htm", "data/raw/zipatlas_data/median_housing_costs.csv"),
+        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-owner-occupied-housing-costs.htm", "data/raw/zipatlas_data/owner_median_housing_costs.csv"),
+        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-renter-occupied-housing-costs.htm", "data/raw/zipatlas_data/renter_median_housing_costs.csv"),
+        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-housing-cost-as-percentage-of-income.htm", "data/raw/zipatlas_data/housing_cost_perc_income.csv"),
+        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-unemployment-rate.htm", "data/raw/zipatlas_data/unemployment_rates.csv"),
+        ("https://zipatlas.com/us/il/chicago/zip-code-comparison/highest-poverty.htm", "data/raw/zipatlas_data/poverty_levels.csv")
     ]
 
     # Scrape each URL
@@ -78,11 +79,12 @@ def zip_health_bulk_data():
     # Load the datasets into DataFrames
     #zipatlas_df = pd.read_csv("zipatlas.csv")
     zipatlas_df = create_zipatlas_data()
-    comm_health_df = pd.read_csv("../data/preprocessed/unified_community_health_count.csv")
-    parks_count = clean_parks_data("../data/raw/parks/CPD_Parks_2025.csv")
-    grocery_store_count = clean_grocery_data("../data/raw/grocery_stores/grocery_stores_data.csv")
-    public_transit_count = clean_publictransit_data("../data/raw/public_transit/publictransit_2024.csv")
-    hospital_count = clean_hospital_data("../data/raw/Hospitals/hospitals.csv")
+    #comm_health_df = pd.read_csv("../data/preprocessed/unified_community_health_count.csv")
+    comm_health_df = join_health_df()
+    parks_count = clean_parks_data("data/raw/parks/CPD_Parks_2025.csv")
+    grocery_store_count = clean_grocery_data("data/raw/grocery_stores/grocery_stores_data.csv")
+    public_transit_count = clean_publictransit_data("data/raw/public_transit/publictransit_2024.csv")
+    hospital_count = clean_hospital_data("data/raw/Hospitals/hospitals.csv")
 
     dfs = [zipatlas_df, comm_health_df, parks_count, grocery_store_count, public_transit_count, hospital_count]
     dfs = [df.astype({'Zip Code': 'str'}) for df in dfs] # Ensure Zip Code is a string in all dfs
@@ -98,7 +100,7 @@ def zip_health_bulk_data():
                 .astype(float)
             )
 
-    final_df.to_csv("../data/preprocessed/zipatlas_bulk_merge.csv", index=False)
+    final_df.to_csv("data/preprocessed/zipatlas_bulk_merge.csv", index=False)
     print(f"Zip and Bulk Data merged and successfully saved.")
 
 zip_health_bulk_data()
