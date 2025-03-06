@@ -1,19 +1,12 @@
-#Necessary packages download: 
-import dash
+#libraries
 import plotly
 import pandas as pd
-
-#for shapefiles
 import geopandas as gpd
 from shapely.wkt import loads
-
-#DASH APP:
 import dash
 from dash import dcc, html
 import plotly.express as px
 import plotly.graph_objects as go
-
-#*Adding Interactivity like Filters on top of viz: *
 from dash.dependencies import Input, Output
 import dash_leaflet as dl
 
@@ -49,6 +42,11 @@ gdf_zcta['ZIP'] = gdf_zcta['ZIP'].astype(str)
 #merging the data with the shapefile
 merged_gdf = gdf_zcta.merge(df_chicago_unique, left_on='ZIP', right_on='Zip code')
 
+
+#computing centroids for labeling
+merged_gdf["lon"] = merged_gdf.geometry.centroid.x
+merged_gdf["lat"] = merged_gdf.geometry.centroid.y
+
 #GeoDataFrame to GeoJSON
 geojson_data = merged_gdf.to_json()
 
@@ -72,67 +70,56 @@ fig = px.choropleth(merged_gdf,
                                 "Unemployment rate": "Unemployment Rate"})
 
 #layout for display
-fig.update_geos(fitbounds="locations", visible=False)
+fig.update_geos(fitbounds="locations", visible=False, projection_type="mercator")
 fig.update_layout(
     title="Chicago Median Property Prices by Zip Code",
-    geo=dict(showcoastlines=True, coastlinecolor="Blue"),
-    
+    geo=dict(showcoastlines=True, coastlinecolor="Blue"),  
 )
-
-#layout of the Dash app
-app.layout = html.Div([
-    html.H1("Chicago Zip Code Data Visualization"),
-    dcc.Graph(id="choropleth-map", figure=fig),
-])
-
-#running the appi
-if __name__ == "__main__":
-    app.run_server(debug=True, port=8051)
 
 app.layout = html.Div([
     html.H1("Chicago Zip Code Data Visualization", style={"textAlign": "center"}),
 
-    #dropdown menu
     html.Div([
-        html.Label("Select Variable:", style={"fontSize": "16px", "fontWeight": "bold"}),
+        html.Label("Select Variable:"),
         dcc.Dropdown(
             id="variable-dropdown",
             options=[
                 {'label': 'Median Property Prices', 'value': 'median_property_prices'},
                 {'label': 'Number of Schools', 'value': 'school_count'},
                 {'label': 'Number of Parks', 'value': 'park_count'},
+                {'label': 'Number of Community Health Centers', 'value': 'cnt_comm_health_ctr'},
+                {'label': 'Number of Public Transport Transits', 'value': 'num_public_transit'},
+                {'label': 'Number of Grocery Stores', 'value': 'grocery_store_count'},
+                {'label': 'Poverty Levels', 'value': 'poverty_levels'},
+                {'label': 'Unemployment rate', 'value': 'Unemployment rate'}
             ],
             value='median_property_prices',
             clearable=False,
-            style={"width": "60%", "margin": "auto"}
+            style={"width": "50%", "margin": "auto"}
         ),
-    ], style={"padding": "20px", "textAlign": "center"}),
+    ], style={"textAlign": "center", "padding": "20px"}),
 
-    #Choropleth Map
-    #to increase the size of the size of the map - not working
-    #how to change the place of the map on the page
-    dcc.Graph(id="choropleth-map", style={"height": "70vh", "width": "100%"}),
+    #choropleth Map (Plotly)
+    html.Div([
+        dcc.Graph(id="choropleth-map", figure=fig, style={"position": "relative", "zIndex": 1})
+    ]),
 
-    #map overlay: Dash Leaflet
-    #no change on the visualization
+    #Dash Leaflet Map (Overlay)
     html.Div([
         dl.Map([
-            dl.TileLayer(
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                attribution="OpenStreetMap Contributors"
-            ),
+            dl.TileLayer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
             dl.GeoJSON(
                 id="geojson-layer",
-                data=merged_gdf.__geo_interface__,
-                style={"fillColor": "blue", "color": "black", "weight": 1, "fillOpacity": 0.5}
-            ),
-            dl.LayerGroup(id="labels-layer")
-        ], id="map", center=[41.8781, -87.6298], zoom=10, style={"height": "70vh", "width": "100%"})
-    ], style={"padding": "20px"})
+                data=geojson_data,
+                style={"fillColor": "blue", "color": "black", "weight": 1, "fillOpacity": 0.3}
+            )
+        ], center=[41.8781, -87.6298], zoom=10, 
+        bounds=[[41.6445, -87.9401], [42.0230, -87.5240]],  #bounds for Chicago
+        style={"position": "absolute", "top": 0, "left": 0, "height": "100%", "width": "100%", "zIndex": 2, "opacity": 0.5})
+    ], style={"position": "relative", "height": "90vh", "width": "100%"})  #both maps stay aligned
 ])
 
 #updating the map based on dropdown selection
-#cannot see the dropdown
 @app.callback(
     Output("choropleth-map", "figure"),
     Input("variable-dropdown", "value")
@@ -145,21 +132,22 @@ def update_map(selected_variable):
         color=selected_variable,
         hover_name="Zip code",
         hover_data=[selected_variable],
-        color_continuous_scale="Blues_r",
+        color_continuous_scale="Blues",
         labels={selected_variable: selected_variable},
     )
-    fig.update_geos(fitbounds="locations", visible=False)
+    fig.update_geos(fitbounds="locations", visible=False, projection_type="mercator")
+
     fig.update_layout(
         title=f"Chicago {selected_variable} by Zip Code",
-        geo=dict(showcoastlines=True, coastlinecolor="Black"),
+        geo=dict(showcoastlines=True, coastlinecolor="Blue"),
         coloraxis_colorbar=dict(
             title=selected_variable,
             tickformat=':$,.0f',
             ticks="outside",
         )
     )
+
     #to add the zip code labels on the map
-    #not visible  on the map
     fig.add_trace(go.Scattergeo(
         lon=merged_gdf["lon"],
         lat=merged_gdf["lat"],
@@ -168,13 +156,15 @@ def update_map(selected_variable):
         textfont={"size": 10, "color": "black"},
         showlegend=False
     ))
-    fig.update_geos(
-        fitbounds="locations",
-        visible=False,
-        projection_type="mercator"
-    )
+
+    #figure size
     fig.update_layout(
-        height=900,  # Adjust height
-        margin={"r":0, "t":50, "l":0, "b":0}
+        height = 750,
+        width = 1700,
+        margin = {"r":50, "t":50, "l":0, "b":0}
     )
     return fig
+
+#running the app
+if __name__ == "__main__":
+    app.run_server(debug=True, port=8051)
