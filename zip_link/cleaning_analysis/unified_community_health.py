@@ -36,7 +36,7 @@ def process_health_data(input_file):
         lambda x: re.search(r"\b\d{5}\b", x).group() if re.search(r"\b\d{5}\b", x) else None
     )
     # Remove rows without valid ZIP codes
-    df = df.dropna(subset=["Zip Code"])
+    df = df.dropna(subset=["Zip Code"]) 
     return df 
 
 def get_hrsa_data(path):

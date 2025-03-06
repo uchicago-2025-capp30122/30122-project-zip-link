@@ -71,7 +71,7 @@ def create_zipatlas_data():
     dfs = [pd.read_csv(f) for _, f in urls]
     df_merged = reduce(lambda left, right: pd.merge(left, right, on="Zip Code", how="inner"), dfs)
 
-    return df_merged
+    return df_merged 
 
 # Merge all data - ZipAtlas and Community Health Centre Data
 
