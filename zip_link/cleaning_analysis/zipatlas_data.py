@@ -3,7 +3,7 @@ import lxml.html as lh
 import pandas as pd
 import re
 from functools import reduce
-from zip_link.cleaning_analysis.bulk_data_processing import clean_parks_data, clean_grocery_data, clean_publictransit_data, clean_hospital_data
+from zip_link.cleaning_analysis.bulk_data_processing import clean_parks_data, clean_grocery_data, clean_publictransit_data, clean_hospital_data, clean_school_data
 from zip_link.cleaning_analysis.unified_community_health import join_health_df 
 
 
@@ -85,6 +85,7 @@ def zip_health_bulk_data():
     grocery_store_count = clean_grocery_data("data/raw/grocery_stores/grocery_stores_data.csv")
     public_transit_count = clean_publictransit_data("data/raw/public_transit/publictransit_2024.csv")
     hospital_count = clean_hospital_data("data/raw/Hospitals/hospitals.csv")
+    school_count = clean_school_data("data/raw/Schools/schools_data.csv")
 
     dfs = [zipatlas_df, comm_health_df, parks_count, grocery_store_count, public_transit_count, hospital_count]
     dfs = [df.astype({'Zip Code': 'str'}) for df in dfs] # Ensure Zip Code is a string in all dfs
