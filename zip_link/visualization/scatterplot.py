@@ -14,6 +14,16 @@ non_discrete_vars = [
     "poverty_levels"
 ]
 
+format_dict = {
+    "median_property_prices": lambda x: f"${x:,.2f}",
+    "median_housing_costs": lambda x: f"${x:,.2f}",
+    "owner_median_housing_costs": lambda x: f"${x:,.2f}",
+    "renter_median_housing_costs": lambda x: f"${x:,.2f}",
+    "housing_cost_perc_income": lambda x: f"{x:.2f}%",
+    "unemployment_rates": lambda x: f"{x:.2f}%",
+    "poverty_levels": lambda x: f"{x:.2f}%"
+}
+
 app = dash.Dash(__name__)
 
 app.layout = html.Div([
@@ -37,8 +47,11 @@ app.layout = html.Div([
     [dash.dependencies.Input('var-selector', 'value')]
 )
 def update_scatter(selected_var):
-    avg_value = df[selected_var].mean()
+    formatted_column_name = selected_var.replace('_', ' ').title()
+    df[formatted_column_name] = df[selected_var].apply(format_dict[selected_var])
 
+    unemployment_rates_formatted_column_name = "Unemployment Rates"
+    df[unemployment_rates_formatted_column_name] = df["unemployment_rates"].apply(format_dict["unemployment_rates"])
     # Create the scatter plot with hover_data (just for the Zip Code)
     fig = px.scatter(
         df, 
@@ -46,7 +59,11 @@ def update_scatter(selected_var):
         y="unemployment_rates", 
         title=f"{selected_var.replace('_', ' ').title()} vs Unemployment Rates",
         hover_data={
-            'Zip Code': True,  # Include 'Zip Code' in hover
+            'Zip Code': True,
+            selected_var: False,
+            formatted_column_name: True,
+            'unemployment_rates': False,
+            unemployment_rates_formatted_column_name: True
         }
     )
 
