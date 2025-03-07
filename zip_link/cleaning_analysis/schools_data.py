@@ -34,11 +34,11 @@ def extract_zip(address):
     
     parts = address.split(",")
     street_address = parts[0].strip()
-    csz = parts[-1].strip()
+    rest = parts[-1].strip()
 
     #extracting zip cpde
-    zip_code = csz.split()[-1] if csz.split()[-1].isdigit() else "N/A"
-    return street_address, csz, zip_code
+    zip_code = rest.split()[-1] if rest.split()[-1].isdigit() else "N/A"
+    return street_address, rest, zip_code
 
 def scrape_api(total_pages=65):
     all_results = []
@@ -52,13 +52,13 @@ def scrape_api(total_pages=65):
                 title = school.get("title", "N/A")  # Extract school name
                 full_address = school.get("address", "N/A")  # Extract full address
                 
-                street, csz, zip_code = extract_zip(full_address)
+                street, rest, zip_code = extract_zip(full_address)
 
                 all_results.append({
-                    "title": title,
-                    "street": street,
-                    "csz": csz,
-                    "zip_code": zip_code
+                    "School Name": title,
+                    "address": street,
+                    #"csz": csz,
+                    "Zip Code": zip_code
                 })
         else:
             print(f"Skipping page {page} due to error or no results.")
