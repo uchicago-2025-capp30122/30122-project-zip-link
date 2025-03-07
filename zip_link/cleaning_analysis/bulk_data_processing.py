@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 def clean_parks_data(path):
     df = pd.read_csv(path)
@@ -91,8 +92,43 @@ def clean_school_data(path):
 
 
 
+def clean_population_data(path):
+    """
+    Cleans the population data by:
+    - Keeping only relevant columns ('Zip Code' and 'Population')
+    - Dropping missing values
+    - Standardizing ZIP codes to 5 digits
+    - Removing duplicates
+    - Aggregating population per ZIP code
+    - Saving cleaned data to preprocessed folder
+    - Returning the cleaned DataFrame
+    """
+    # Load the dataset
+    population_df = pd.read_csv(path)
 
+    # Keep only relevant columns and rename them
+    population_df = population_df[['Entity', 'Observation Value']].rename(columns={
+        'Entity': 'Zip Code',
+        'Observation Value': 'Population'
+    })
 
+    # Drop missing values
+    population_df = population_df.dropna(subset=['Zip Code', 'Population'])
 
+    # Ensure ZIP codes are standardized (5 digits)
+    population_df['Zip Code'] = population_df['Zip Code'].astype(str).str[:5].str.zfill(5)
 
+    # Convert Population to integer
+    population_df['Population'] = pd.to_numeric(population_df['Population'], errors='coerce').fillna(0).astype(int)
 
+    # Remove duplicates
+    population_df = population_df.drop_duplicates()
+
+    # Save cleaned data
+    output_path = "data/preprocessed/population_data.csv"
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)  # Ensure directory exists
+    population_df.to_csv(output_path, index=False)
+
+    
+
+    return population_df  
