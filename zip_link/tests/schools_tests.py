@@ -1,10 +1,8 @@
 
-
-
 import pytest
 import pandas as pd
 import re
-from schools_data import extract_zip
+from zip_link.cleaning_analysis.schools_data import extract_zip
 
 
 @pytest.mark.parametrize(
