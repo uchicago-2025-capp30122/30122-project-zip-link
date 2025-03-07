@@ -1,55 +1,79 @@
+import os
 import requests
-from lxml import html
-import csv
+import json
+import time
+import pandas as pd
 
-def get_school_data(page_url):
-    response = requests.get(page_url)
-    if response.status_code != 200:
-        print(f"Failed to fetch {page_url}")
-        return []
-    
-    tree = html.fromstring(response.content)
-    schools = []
-    
-    for school in tree.xpath("//div[contains(@class, 'school-result')]"):
-        name = school.xpath(".//h3/text()")
-        address = school.xpath(".//p[contains(@class, 'address')]/text()")
-        phone = school.xpath(".//p[contains(@class, 'phone')]/text()")
-        
-        schools.append({
-            "name": name[0].strip() if name else "",
-            "address": address[0].strip() if address else "",
-            "phone": phone[0].strip() if phone else ""
-        })  
-    return schools
+#API link
+URL = "https://www.cps.edu/api/v1/search/results"
+HEADERS = {"Content-Type": "application/json"}
 
-def scrape_all_schools(base_url, total_pages):
-    all_schools = []
+def fetch_data(page_number):
+    payload = {
+        "searchTerm": "",
+        "pageSize": 10,
+        "pageNumber": page_number,
+        "facets": [],
+        "context": "Schools",
+        "sortField": 1,
+        "sortDirection": 1,
+        "dateSortRelevanceFilter": 0,
+        "contentId": "10375"
+    }
+    response = requests.post(URL, headers=HEADERS, json=payload)
     
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+        return None
+
+def extract_zip(address):
+    if not address or "," not in address:
+        return "N/A", "N/A"
+    
+    parts = address.split(",")
+    street_address = parts[0].strip()
+    csz = parts[-1].strip()
+
+    #extracting zip cpde
+    zip_code = csz.split()[-1] if csz.split()[-1].isdigit() else "N/A"
+    return street_address, csz, zip_code
+
+def scrape_api(total_pages=65):
+    all_results = []
+
     for page in range(1, total_pages + 1):
-        url = f"{base_url}&pageNumber={page}"
-        print(f"Scraping page {page}")
-        all_schools.extend(get_school_data(url))
-    return all_schools
+        print(f"Fetching page {page}")
+        data = fetch_data(page)
 
-# def save_to_csv(data, file_path):
-#     keys = ["name", "address", "phone"]
-#     with open(file_path, "w", newline="", encoding="utf-8") as file:
-#         writer = csv.DictWriter(file, fieldnames=keys)
-#         writer.writeheader()
-#         writer.writerows(data)
+        if data and "results" in data:
+            for school in data["results"]:
+                title = school.get("title", "N/A")  # Extract school name
+                full_address = school.get("address", "N/A")  # Extract full address
+                
+                street, csz, zip_code = extract_zip(full_address)
 
-def main():
-    base_url = "https://www.cps.edu/search/?pageNumber=1&context=Schools&sortId=a-z"
-    total_pages = 65
-    schools = scrape_all_schools(base_url, total_pages)
-    # file_path = "data/raw/schools.csv"
-    # save_to_csv(schools, file_path)
-    output_file = "data/raw/schools.csv" 
-    with open(output_file, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["name", "address", "phone"])
-        writer.writeheader()
-        writer.writerows(schools)
+                all_results.append({
+                    "title": title,
+                    "street": street,
+                    "csz": csz,
+                    "zip_code": zip_code
+                })
+        else:
+            print(f"Skipping page {page} due to error or no results.")
+
+        time.sleep(1)  # Respectful rate-limiting
+    return pd.DataFrame(all_results)  # Convert to DataFrame
+
 
 if __name__ == "__main__":
-    main()
+    df = scrape_api(total_pages=65)
+
+    output_dir = "../data/raw/Schools"
+    os.makedirs(output_dir, exist_ok=True)  # Ensure directory exists
+    output_file = os.path.join(output_dir, "schools_data.csv")
+
+    #DataFrame to CSV
+    df.to_csv(output_file, index=False)
+    print(f"Data saved to {output_file}")
