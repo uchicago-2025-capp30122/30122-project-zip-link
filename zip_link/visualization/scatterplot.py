@@ -12,7 +12,7 @@ non_discrete_vars = [
     "median_property_prices", "median_housing_costs", "owner_median_housing_costs",
     "renter_median_housing_costs", "housing_cost_perc_income", "unemployment_rates",
     "poverty_levels"
-]
+] 
 
 format_dict = {
     "median_property_prices": lambda x: f"${x:,.2f}",
