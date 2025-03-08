@@ -14,7 +14,7 @@ def calculate_accessibility_index():
             + df["park_count"]
             + df["grocery_store_count"]
             + df["num_public_transit_stops"]
-           # + df["school_count"]
+            + df["school_count"]
         )
         
         # Compute Accessibility Index
