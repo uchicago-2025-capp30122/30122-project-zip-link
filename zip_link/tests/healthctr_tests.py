@@ -76,3 +76,4 @@ def test_fuzzy_match():
     })
     result = fuzzy_match(df, threshold=0.9)
     assert len(result) == 1  # Should merge duplicates
+ 
