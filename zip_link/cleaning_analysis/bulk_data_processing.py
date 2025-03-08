@@ -77,9 +77,9 @@ def clean_school_data(path):
         - Saving cleaned data to preprocessed folder
         """
         df = pd.read_csv(path)
-        df = df.dropna(subset=['School Name', 'ZIP Code'])  # Drop null values
-        df['ZIP Code'] = df['ZIP Code'].astype(str).str[:5].str.zfill(5)  # Standardize ZIP codes
-        df.columns = ['School Name', 'Zip Code']  # Rename columns
+        df = df.dropna(subset=['School Name', 'Zip Code'])  # Drop null values
+        df['Zip Code'] = df['Zip Code'].astype(str).str[:5].str.zfill(5)  # Standardize ZIP codes
+        #df.columns = ['School Name', 'Zip Code']  # Rename columns
         df = df.drop_duplicates()  # Remove duplicates
         
         # Count hospitals per ZIP code
