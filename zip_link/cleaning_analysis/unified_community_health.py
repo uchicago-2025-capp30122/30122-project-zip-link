@@ -46,8 +46,8 @@ def get_hrsa_data(path):
     df_chicago = df[df["City"].str.lower() == "chicago"]
     # Drop duplicates across combination of Health Center Name, Operated By, ZIP Code and Telephone Number and rename ZIP Code to Zip Code
     df_chicago_unique = df_chicago.drop_duplicates(['Health Center Name', 'Operated By', 'ZIP Code', 'Telephone Number']) 
-    df_chicago_unique.rename(columns={'ZIP Code': 'Zip Code'}, inplace=True) 
-    df_chicago_unique["Zip Code"] = df_chicago_unique["Zip Code"].astype(str).str[:5] # Extract first 5 digits
+    df_chicago_unique = df_chicago_unique.rename(columns={'ZIP Code': 'Zip Code'})
+    df_chicago_unique.loc[:, "Zip Code"] = df_chicago_unique["Zip Code"].astype(str).str[:5]
     # Remove trailing and leading spaces
     df_chicago_unique = df_chicago_unique.map(lambda x: x.strip() if isinstance(x, str) else x)
     # Get phone number 
