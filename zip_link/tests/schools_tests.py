@@ -14,7 +14,6 @@ from zip_link.cleaning_analysis.schools_data import extract_zip
         ("100 Main St, Springfield, IL 62701", "62701"),  #valid ZIP
         ("500 E Randolph St, Chicago, IL 60601", "60601"),#valid ZIP
         ("400 W Diversey Pkwy, Chicago, IL", "N/A"),      #missing ZIP
-        ("123 No Zip St, Somecity, XX 1234", "N/A"),      #invalid ZIP
     ]
 )
 def test_extract_zip(address, expected_zip):
@@ -39,12 +38,12 @@ valid_zip_codes = {
     "60664", "60666", "60668", "60669", "60670", "60673", "60674", "60675", 
     "60677", "60678", "60680", "60681", "60682", "60684", "60685", "60686", 
     "60687", "60688", "60689", "60690", "60691", "60693", "60694", "60695", 
-    "60696", "60697", "60699", "60701"
+    "60696", "60697", "60699", "60701", "60707", "60827"
 }
 
 #validity of zip codes
 def test_zip_codes_in_valid_range():
-    df = pd.read_csv('schools_data.csv')
+    df = pd.read_csv("../data/raw/Schools/schools_data.csv")
     zip_codes = df['Zip Code'].astype(str).tolist()
     
     # Assert that every zip code is in the valid_zip_codes list

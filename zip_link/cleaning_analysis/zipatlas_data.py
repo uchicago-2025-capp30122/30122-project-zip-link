@@ -73,27 +73,27 @@ def create_zipatlas_data():
 
     return df_merged 
 
-# Merge all data - ZipAtlas and Community Health Centre Data
+# Merge all data - ZipAtlas and All Other Data Sources
 
 def zip_health_bulk_data():
     # Load the datasets into DataFrames
-    #zipatlas_df = pd.read_csv("zipatlas.csv")
     zipatlas_df = create_zipatlas_data()
-    #comm_health_df = pd.read_csv("../data/preprocessed/unified_community_health_count.csv")
     comm_health_df = join_health_df()
     parks_count = clean_parks_data("data/raw/parks/CPD_Parks_2025.csv")
     grocery_store_count = clean_grocery_data("data/raw/grocery_stores/grocery_stores_data.csv")
     public_transit_count = clean_publictransit_data("data/raw/public_transit/publictransit_2024.csv")
     hospital_count = clean_hospital_data("data/raw/Hospitals/hospitals.csv")
-    school_count = clean_school_data("data/raw/Schools/schools_data.csv")
-    Population = clean_population_data("data/raw/Population/Population_Data.csv")
+    #school_count = clean_school_data("data/raw/Schools/schools_data.csv")
+    Population = clean_population_data("data/raw/Population/Population_data.csv")
 
 
-    dfs = [zipatlas_df, comm_health_df, parks_count, grocery_store_count, public_transit_count, hospital_count, Population]
+    dfs = [zipatlas_df, comm_health_df, parks_count, grocery_store_count, public_transit_count, hospital_count, school_count]
     dfs = [df.astype({'Zip Code': 'str'}) for df in dfs] # Ensure Zip Code is a string in all dfs
     # Perform left joins iteratively
     final_df = reduce(lambda left, right: pd.merge(left, right, on='Zip Code', how='left'), dfs)
     final_df = final_df.fillna(0)
+    final_df['total_healthcare_services'] = final_df['cnt_comm_health_ctr'] + final_df['hospital_count']
+    final_df = final_df.drop(['cnt_comm_health_ctr', 'hospital_count'], axis=1)
 
     # Convert all columns other than Zip Code to float
     for col in final_df.columns:
