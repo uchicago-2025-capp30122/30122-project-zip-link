@@ -18,7 +18,7 @@ def clean_parks_data(path):
     zip_counts.columns = ["Zip Code", "park_count"]
     df.to_csv("data/preprocessed/park_data.csv", index=False)
     return zip_counts
-
+ 
 def clean_grocery_data(path):
     df = pd.read_csv(path)
     # Filter open stores only
