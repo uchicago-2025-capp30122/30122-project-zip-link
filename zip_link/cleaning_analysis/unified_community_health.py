@@ -96,7 +96,7 @@ def join_health_df():
     cleaned_data.to_csv("data/preprocessed/unified_community_health_data.csv", index=False)
     zip_counts = cleaned_data["Zip Code"].value_counts().reset_index()
     zip_counts.columns = ["Zip Code", "cnt_comm_health_ctr"]
-    zip_counts.to_csv("../data/preprocessed/unified_community_health_count.csv", index=False)
+    zip_counts.to_csv("data/preprocessed/unified_community_health_count.csv", index=False)
     return zip_counts
 
 # join_health_df()

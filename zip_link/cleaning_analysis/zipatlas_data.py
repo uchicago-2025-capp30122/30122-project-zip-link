@@ -93,7 +93,6 @@ def zip_health_bulk_data():
     final_df = reduce(lambda left, right: pd.merge(left, right, on='Zip Code', how='left'), dfs)
     final_df = final_df.fillna(0)
     final_df['total_healthcare_services'] = final_df['cnt_comm_health_ctr'] + final_df['hospital_count']
-    #final_df = final_df.drop(['cnt_comm_health_ctr', 'hospital_count'])
 
     # Convert all columns other than Zip Code to float
     for col in final_df.columns:
