@@ -22,8 +22,7 @@ def test_drop_null_values(sample_parks_data, tmpdir):
     path = tmpdir.join("sample_parks.csv")
     sample_parks_data.to_csv(path, index=False)
     
-    with patch("os.makedirs") as mock_makedirs, patch.object(pd.DataFrame, 'to_csv') as mock_to_csv:
-        mock_makedirs.return_value = None  # Mock to do nothing when trying to create directories
+    with patch.object(pd.DataFrame, 'to_csv') as mock_to_csv:
         mock_to_csv.return_value = None  # Mock to do nothing when calling to_csv
 
         # Run the clean_parks_data function (this won't create directories or save files)

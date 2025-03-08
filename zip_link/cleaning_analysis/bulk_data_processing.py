@@ -24,7 +24,7 @@ def clean_grocery_data(path):
     # Filter open stores only
     df = df[df['New status'] == 'OPEN']
     # Ensure Zip Code is 5 digits long
-    df['Zip'] = df['Zip'].str[:5].str.zfill(5) 
+    df['Zip'] = df['Zip'].astype(str).str[:5].str.zfill(5) 
     df = df.drop_duplicates() # Drop duplicates
 
     # Subset and rename data 
