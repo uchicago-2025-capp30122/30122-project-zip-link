@@ -87,7 +87,7 @@ def clean_school_data(path):
         Zip_School_Counts.columns = ["Zip Code", "school_count"]
         
         # Save cleaned data
-        df.to_csv("data/preprocessed/hospital_data.csv", index=False)
+        df.to_csv("data/preprocessed/school_data.csv", index=False)
         return Zip_School_Counts
 
 
