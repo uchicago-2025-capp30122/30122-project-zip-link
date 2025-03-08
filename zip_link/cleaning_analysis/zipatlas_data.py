@@ -75,7 +75,7 @@ def create_zipatlas_data():
 
 # Merge all data - ZipAtlas and All Other Data Sources
 
-def zip_health_bulk_data():
+def zip_bulk_data():
     # Load the datasets into DataFrames
     zipatlas_df = create_zipatlas_data()
     comm_health_df = join_health_df()
@@ -106,7 +106,7 @@ def zip_health_bulk_data():
     final_df.to_csv("data/preprocessed/zipatlas_bulk_merge.csv", index=False)
     print(f"Zip and Bulk Data merged and successfully saved.")
 
-zip_health_bulk_data()
+zip_bulk_data()
 
 
 

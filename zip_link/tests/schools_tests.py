@@ -43,7 +43,7 @@ valid_zip_codes = {
 
 #validity of zip codes
 def test_zip_codes_in_valid_range():
-    df = pd.read_csv("../data/raw/Schools/schools_data.csv")
+    df = pd.read_csv("data/raw/Schools/schools_data.csv")
     zip_codes = df['Zip Code'].astype(str).tolist()
     
     # Assert that every zip code is in the valid_zip_codes list
