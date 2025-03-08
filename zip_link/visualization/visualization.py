@@ -1,3 +1,4 @@
+
 #libraries
 import plotly
 import pandas as pd
@@ -102,21 +103,7 @@ app.layout = html.Div([
     #choropleth Map (Plotly)
     html.Div([
         dcc.Graph(id="choropleth-map", figure=fig, style={"position": "relative", "zIndex": 1})
-    ]),
-
-    #Dash Leaflet Map (Overlay)
-    html.Div([
-        dl.Map([
-            dl.TileLayer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
-            dl.GeoJSON(
-                id="geojson-layer",
-                data=geojson_data,
-                style={"fillColor": "blue", "color": "black", "weight": 1, "fillOpacity": 0.3}
-            )
-        ], center=[41.8781, -87.6298], zoom=10, 
-        bounds=[[41.6445, -87.9401], [42.0230, -87.5240]],  #bounds for Chicago
-        style={"position": "absolute", "top": 0, "left": 0, "height": "100%", "width": "100%", "zIndex": 2, "opacity": 0.5})
-    ], style={"position": "relative", "height": "90vh", "width": "100%"})  #both maps stay aligned
+    ])
 ])
 
 #updating the map based on dropdown selection
