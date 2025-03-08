@@ -61,12 +61,12 @@ def clean_hospital_data(path):
         df = df.drop_duplicates()  # Remove duplicates
         
         # Count hospitals per ZIP code
-        Zip_Hospital_Counts = df["Zip Code"].value_counts().reset_index()
-        Zip_Hospital_Counts.columns = ["Zip Code", "hospital_count"]
+        zip_hospital_counts = df["Zip Code"].value_counts().reset_index()
+        zip_hospital_counts.columns = ["Zip Code", "hospital_count"]
         
         # Save cleaned data
         df.to_csv("data/preprocessed/hospital_data.csv", index=False)
-        return Zip_Hospital_Counts
+        return zip_hospital_counts
 
 def clean_school_data(path):
         """
@@ -83,12 +83,12 @@ def clean_school_data(path):
         df = df.drop_duplicates()  # Remove duplicates
         
         # Count hospitals per ZIP code
-        Zip_School_Counts = df["Zip Code"].value_counts().reset_index()
-        Zip_School_Counts.columns = ["Zip Code", "school_count"]
+        zip_school_counts = df["Zip Code"].value_counts().reset_index()
+        zip_school_counts.columns = ["Zip Code", "school_count"]
         
         # Save cleaned data
         df.to_csv("data/preprocessed/school_data.csv", index=False)
-        return Zip_School_Counts
+        return zip_school_counts
 
 
 
@@ -128,7 +128,5 @@ def clean_population_data(path):
     output_path = "data/preprocessed/population_data.csv"
     os.makedirs(os.path.dirname(output_path), exist_ok=True)  # Ensure directory exists
     population_df.to_csv(output_path, index=False)
-
-    
 
     return population_df  
