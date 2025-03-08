@@ -107,9 +107,9 @@ def clean_population_data(path):
     population_df = pd.read_csv(path)
 
     # Keep only relevant columns and rename them
-    population_df = population_df[['Entity', 'Observation Value']].rename(columns={
-        'Entity': 'Zip Code',
-        'Observation Value': 'Population'
+    population_df = population_df[['Entity properties name', 'Variable observation value']].rename(columns={
+        'Entity properties name': 'Zip Code',
+        'Variable observation value': 'Population'
     })
 
     # Drop missing values
