@@ -10,11 +10,11 @@ def calculate_accessibility_index():
         
         # Compute total services count per ZIP code
         df["total_services"] = (
-            df["hospital_count"]
-            + df["cnt_comm_health_ctr"]
+            df["total_healthcare_services"]
             + df["park_count"]
             + df["grocery_store_count"]
             + df["num_public_transit_stops"]
+            + df["school_count"]
         )
         
         # Compute Accessibility Index
