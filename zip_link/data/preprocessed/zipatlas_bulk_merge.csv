@@ -1,4 +1,4 @@
-Zip Code,median_property_prices,median_housing_costs,owner_median_housing_costs,renter_median_housing_costs,housing_cost_perc_income,unemployment_rates,poverty_levels,cnt_comm_health_ctr,park_count,grocery_store_count,num_public_transit_stops,hospital_count,school_count,healthcare_services
+Zip Code,median_property_prices,median_housing_costs,owner_median_housing_costs,renter_median_housing_costs,housing_cost_perc_income,unemployment_rates,poverty_levels,cnt_comm_health_ctr,park_count,grocery_store_count,num_public_transit_stops,hospital_count,school_count,total_healthcare_services
 60621,125834.0,975.0,993.0,972.0,38.8,18.2,33.6,5.0,14.0,2.0,238.0,1.0,15.0,6.0
 60636,128462.0,988.0,844.0,1054.0,38.9,20.9,31.5,1.0,8.0,2.0,220.0,0.0,13.0,1.0
 60628,145441.0,1106.0,1055.0,1140.0,27.3,18.4,23.2,6.0,18.0,3.0,373.0,1.0,25.0,7.0
