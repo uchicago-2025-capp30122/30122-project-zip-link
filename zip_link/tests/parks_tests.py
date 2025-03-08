@@ -13,7 +13,7 @@ def sample_parks_data():
         "ZIP": ["60601", "60602", "60601", "60603", None],
         "PARK_CLASS": ["COMMUNITY PARK", "REGIONAL PARK", "COMMUNITY PARK", "REGIONAL PARK", "CITYWIDE PARK"]
 
-    }
+    } 
     return pd.DataFrame(data)
 
 def test_drop_null_values(sample_parks_data, tmpdir):
