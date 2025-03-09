@@ -145,7 +145,7 @@ def update_map(selected_variable):
     fig.update_geos(fitbounds="locations", visible=False, projection_type="mercator")
 
     fig.update_layout(
-        title=f"{variable_titles.get(selected_variable, selected_variable)} in Chicagoby Zip Code",
+        title=f"{variable_titles.get(selected_variable, selected_variable)} in Chicago by Zip Code",
         geo=dict(showcoastlines=True, coastlinecolor="Blue"),
         coloraxis_colorbar=dict(
             title=variable_titles.get(selected_variable, selected_variable),
