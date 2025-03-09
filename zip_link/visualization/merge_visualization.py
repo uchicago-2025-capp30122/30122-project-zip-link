@@ -14,7 +14,7 @@ import dash_leaflet as dl
 #data sources
 #https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-ZIP-Codes-Map/gdcf-axmw 
 #To run code:
-# uv run python visualization.py
+# uv run python merge_visualization.py
 
 #CSV ==> ShapeFile
 #loading the data
@@ -88,11 +88,11 @@ app.layout = html.Div([
                 {'label': 'Median Property Prices', 'value': 'median_property_prices'},
                 {'label': 'Number of Schools', 'value': 'school_count'},
                 {'label': 'Number of Parks', 'value': 'park_count'},
-                {'label': 'Number of Health Services', 'value': 'total_health_services'},
-                {'label': 'Number of Public Transport Transits', 'value': 'num_public_transit'},
+                {'label': 'Number of Health Services', 'value': 'total_healthcare_services'},
+                {'label': 'Number of Public Transport Transits', 'value': 'num_public_transit_stops'},
                 {'label': 'Number of Grocery Stores', 'value': 'grocery_store_count'},
                 {'label': 'Poverty Levels', 'value': 'poverty_levels'},
-                {'label': 'Unemployment rate', 'value': 'Unemployment rate'}
+                {'label': 'unemployment_rates', 'value': 'Unemployment rate'}
             ],
             value='median_property_prices',
             clearable=False,
@@ -111,14 +111,16 @@ app.layout = html.Div([
     Output("choropleth-map", "figure"),
     Input("variable-dropdown", "value")
 )
-variable_titles = {
+
+def update_map(selected_variable):
+    variable_titles = {
     "median_property_prices": "Median Property Prices",
     "school_count": "Number of Schools",
-    "total_health_services": "Number of Health Services",
+    "total_healthcare_services": "Number of Health Services",
     "num_public_transit_stops": "Number of Public Transport Transits",
     "grocery_store_count": "Number of Grocery Stores",
     "park_count": "Number of Parks",
-    "Unemployment rate": "Unemployment Rates",
+    "unemployment_rates": "Unemployment Rates",
     "poverty_levels": "Poverty Levels",
     }
     
@@ -127,18 +129,18 @@ variable_titles = {
         geojson=merged_gdf.geometry,
         locations=merged_gdf.index,
         color=selected_variable,
-        hover_name="Zip code",
+        hover_name="Zip Code",
         hover_data={selected_variable: ':.0f',
                         "median_property_prices": ':$,.0f',
-                        "accessibility_index": ':.2f',
+                        "Accessibility Index": ':.2f',
                         "poverty_levels":':.2f',
-                        "Unemployment rate":':.2f'},
+                        "unemployment_rates":':.2f'},
         color_continuous_scale="Blues",
         labels={selected_variable: variable_titles.get(selected_variable, selected_variable),
                 "median_property_prices": "Median Property Price (USD)",
-                "accessibility_index": "Accessibility Index",
+                "Accessibility Index": "Accessibility Index",
                 "poverty_levels": "Poverty Level",
-                "Unemployment rate": "Unemployment Rate"},
+                "unemployment_rates": "Unemployment Rate"},
     )
     fig.update_geos(fitbounds="locations", visible=False, projection_type="mercator")
 
@@ -151,7 +153,6 @@ variable_titles = {
             ticks="outside",
         )
     )
-    )
 
     #to add the zip code labels on the map
     fig.add_trace(go.Scattergeo(
@@ -159,8 +160,9 @@ variable_titles = {
         lat=merged_gdf["lat"],
         mode="text",
         text=merged_gdf["Zip Code"],
-        textfont={"size": 6, "color": "black"},
-        showlegend=False
+        textfont={"size": 7, "color": "black"},
+        showlegend=False,
+        hoverinfo="skip"
     ))
 
     #figure size
