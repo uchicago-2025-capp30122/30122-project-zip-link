@@ -1,4 +1,3 @@
-
 #libraries
 import plotly
 import pandas as pd
@@ -13,41 +12,39 @@ import dash_leaflet as dl
 
 #data sources
 #https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-ZIP-Codes-Map/gdcf-axmw 
-#To run code:
-# uv run python merge_visualization.py
 
-#CSV ==> ShapeFile
-#loading the data
+# CSV ==> ShapeFile
+# loading the data
 df_chicago_unique = pd.read_csv("../data/preprocessed/zipatlas_bulk_merge.csv")
 df_chicago_unique['Zip Code'] = df_chicago_unique['Zip Code'].astype(str)
 
-#creating the shapefile
+# creating the shapefile
 df_shapefile = pd.read_csv("Boundaries_-_ZIP_Codes_20250222.csv")
 df_shapefile["ZIP"] = df_shapefile["ZIP"].astype(str)
 
-#convert WKT geometry column to Shapely geometries
+# convert WKT geometry column to Shapely geometries
 df_shapefile["the_geom"] = df_shapefile["the_geom"].apply(loads)
 df_shapefile["SHAPE_AREA"] = df_shapefile["SHAPE_AREA"] / 1e6
 
-#convert to GeoDataFrame
+# convert to GeoDataFrame
 gdf = gpd.GeoDataFrame(df_shapefile, geometry="the_geom", crs="EPSG:4326")
 
-#save as a shapefile
+# save as a shapefile
 gdf.to_file("zcta_shapefile.shp", driver="ESRI Shapefile")
 
-#loading ZCTA shapefile
+# loading ZCTA shapefile
 zcta_shapefile = ("zcta_shapefile.shp")
 gdf_zcta = gpd.read_file(zcta_shapefile)
 gdf_zcta['ZIP'] = gdf_zcta['ZIP'].astype(str)
 
-#merging the data with the shapefile
+# merging the data with the shapefile
 merged_gdf = gdf_zcta.merge(df_chicago_unique, left_on='ZIP', right_on='Zip Code')
 
-#computing centroids for labeling
+# computing centroids for labeling
 merged_gdf["lon"] = merged_gdf.geometry.centroid.x
 merged_gdf["lat"] = merged_gdf.geometry.centroid.y
 
-#GeoDataFrame to GeoJSON
+# GeoDataFrame to GeoJSON
 geojson_data = merged_gdf.to_json()
 
 # Define variables
@@ -72,25 +69,30 @@ format_dict = {
 app = dash.Dash(__name__)
 
 # App layout
-app.layout = html.Div([
-    html.H1("Chicago Zip Code Data Visualization", style={"textAlign": "center"}),
+app.layout = html.Div(style={"backgroundColor": "#f4f4f4", "padding": "20px"}, children=[
+    html.H1("Zip & Link: Exploring Housing Prices and Access to Essential Services in Chicago", 
+            style={"textAlign": "center", "fontSize": "30px", "color": "#2a3f5f", "font-weight": "bold"}),
+
+    # Abstract or brief description below the title
+    html.P("This dashboard examines the connection between housing prices and various economic indicators, including housing costs, unemployment rates, poverty rates, and access to essential services. We focus on five key services: healthcare, schools, public transit, grocery stores, and parks within Chicago. Using this data, we have developed an Accessibility Index to investigate how it correlates with these economic factors across different Zip Codes in the city. Feel free to select the variables you'd like to visualize and explore their distribution across the city. Enjoy exploring!", 
+           style={"textAlign": "left", "fontSize": "16px", "color": "#888", "marginTop": "10px"}),
 
     # Dropdown to select variable for both maps
     html.Div([
-        html.Label("Select Variable:"),
+        html.Label("Select Variable:", style={"fontSize": "18px", "color": "#2a3f5f"}),
         dcc.Dropdown(
             id="variable-dropdown",
             options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in non_discrete_vars],
             value="median_property_prices",
             clearable=False,
-            style={"width": "50%", "margin": "auto"}
+            style={"width": "100%", "margin": "auto", "backgroundColor": "#ffffff", "border": "1px solid #ddd"}
         ),
     ], style={"textAlign": "center", "padding": "20px"}),
 
     # Choropleth Map (Plotly)
     html.Div([
         dcc.Graph(id="choropleth-map", style={"position": "relative", "zIndex": 1})
-    ]),
+    ], style={"marginTop": "30px"}),
 
     # Scatter Plot
     html.Div([
@@ -136,7 +138,7 @@ def update_visualizations(selected_variable):
                 "poverty_levels": "Poverty Level",
                 "unemployment_rates": "Unemployment Rate"},
     )
-    
+
     fig_map.update_geos(fitbounds="locations", visible=False, projection_type="mercator")
     fig_map.update_layout(
         title=f"{variable_titles.get(selected_variable, selected_variable)} in Chicago by Zip Code",
