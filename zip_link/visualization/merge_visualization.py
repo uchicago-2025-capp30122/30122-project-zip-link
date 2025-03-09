@@ -111,27 +111,46 @@ app.layout = html.Div([
     Output("choropleth-map", "figure"),
     Input("variable-dropdown", "value")
 )
-def update_map(selected_variable):
+variable_titles = {
+    "median_property_prices": "Median Property Prices",
+    "school_count": "Number of Schools",
+    "total_health_services": "Number of Health Services",
+    "num_public_transit_stops": "Number of Public Transport Transits",
+    "grocery_store_count": "Number of Grocery Stores",
+    "park_count": "Number of Parks",
+    "Unemployment rate": "Unemployment Rates",
+    "poverty_levels": "Poverty Levels",
+    }
+    
     fig = px.choropleth(
         merged_gdf,
         geojson=merged_gdf.geometry,
         locations=merged_gdf.index,
         color=selected_variable,
-        hover_name="Zip Code",
-        hover_data=[selected_variable],
+        hover_name="Zip code",
+        hover_data={selected_variable: ':.0f',
+                        "median_property_prices": ':$,.0f',
+                        "accessibility_index": ':.2f',
+                        "poverty_levels":':.2f',
+                        "Unemployment rate":':.2f'},
         color_continuous_scale="Blues",
-        labels={selected_variable: selected_variable},
+        labels={selected_variable: variable_titles.get(selected_variable, selected_variable),
+                "median_property_prices": "Median Property Price (USD)",
+                "accessibility_index": "Accessibility Index",
+                "poverty_levels": "Poverty Level",
+                "Unemployment rate": "Unemployment Rate"},
     )
     fig.update_geos(fitbounds="locations", visible=False, projection_type="mercator")
 
     fig.update_layout(
-        title=f"Chicago {selected_variable} by Zip Code",
+        title=f"{variable_titles.get(selected_variable, selected_variable)} in Chicagoby Zip Code",
         geo=dict(showcoastlines=True, coastlinecolor="Blue"),
         coloraxis_colorbar=dict(
-            title=selected_variable,
+            title=variable_titles.get(selected_variable, selected_variable),
             tickformat=':$,.0f',
             ticks="outside",
         )
+    )
     )
 
     #to add the zip code labels on the map
@@ -140,7 +159,7 @@ def update_map(selected_variable):
         lat=merged_gdf["lat"],
         mode="text",
         text=merged_gdf["Zip Code"],
-        textfont={"size": 10, "color": "black"},
+        textfont={"size": 6, "color": "black"},
         showlegend=False
     ))
 
