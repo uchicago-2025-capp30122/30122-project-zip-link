@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.express as px
 
 # Load the preprocessed data for visualization
-data_path = "data/preprocessed/zipatlas_bulk_merge.csv"
+data_path = "../data/preprocessed/zipatlas_bulk_merge.csv"
 df = pd.read_csv(data_path)
 
 # List of non-discrete variables from ZipAtlas
@@ -50,30 +50,30 @@ def update_scatter(selected_var):
     formatted_column_name = selected_var.replace('_', ' ').title()
     df[formatted_column_name] = df[selected_var].apply(format_dict[selected_var])
 
-    unemployment_rates_formatted_column_name = "Unemployment Rates"
-    df[unemployment_rates_formatted_column_name] = df["unemployment_rates"].apply(format_dict["unemployment_rates"])
+    #ai_formatted_column_name = "Accessibility Index"
+    #df[ai_formatted_column_name] = df["Normalized Accessibility Index"].apply(format_dict["unemployment_rates"])
     # Create the scatter plot with hover_data (just for the Zip Code)
     fig = px.scatter(
         df, 
         x=selected_var, 
-        y="unemployment_rates", 
+        y="Normalized Accessibility Index", 
         title=f"{selected_var.replace('_', ' ').title()} vs Unemployment Rates",
         hover_data={
             'Zip Code': True,
             selected_var: False,
             formatted_column_name: True,
-            'unemployment_rates': False,
-            unemployment_rates_formatted_column_name: True
+            'Normalized Accessibility Index': True
+            #unemployment_rates_formatted_column_name: True
         }
     )
 
     # Add horizontal line for average unemployment rate - TEMPLATE ONLY! We actually want to plot the accessibility index
-    avg_unemployment = df["unemployment_rates"].mean()
+    avg_accessibility_index = df["Normalized Accessibility Index"].mean()
     fig.add_hline(
-        y=avg_unemployment, 
+        y=avg_accessibility_index, 
         line_dash="dash", 
         line_color="red", 
-        annotation_text="Average Unemployment Rate", 
+        annotation_text="Average Accessibility Index", 
         annotation_position="top left"
     )
 
