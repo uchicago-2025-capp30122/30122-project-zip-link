@@ -25,7 +25,7 @@ def process_health_data(input_file):
     # Fill NaN values in the rest of the DataFrame with an empty string
     df = df.fillna("")
     # Remove trailing and leading spaces
-    df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+    df = df.map(lambda x: x.strip() if isinstance(x, str) else x)
     # Get phone number 
     df['Telephone Number'] = df['Telephone Number'].apply(
     lambda x: re.sub(r'\s+', '', x) if pd.notnull(x) else ''  # Remove all spaces
@@ -46,10 +46,10 @@ def get_hrsa_data(path):
     df_chicago = df[df["City"].str.lower() == "chicago"]
     # Drop duplicates across combination of Health Center Name, Operated By, ZIP Code and Telephone Number and rename ZIP Code to Zip Code
     df_chicago_unique = df_chicago.drop_duplicates(['Health Center Name', 'Operated By', 'ZIP Code', 'Telephone Number']) 
-    df_chicago_unique.rename(columns={'ZIP Code': 'Zip Code'}, inplace=True) 
-    df_chicago_unique["Zip Code"] = df_chicago_unique["Zip Code"].astype(str).str[:5] # Extract first 5 digits
+    df_chicago_unique = df_chicago_unique.rename(columns={'ZIP Code': 'Zip Code'})
+    df_chicago_unique.loc[:, "Zip Code"] = df_chicago_unique["Zip Code"].astype(str).str[:5]
     # Remove trailing and leading spaces
-    df_chicago_unique = df_chicago_unique.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+    df_chicago_unique = df_chicago_unique.map(lambda x: x.strip() if isinstance(x, str) else x)
     # Get phone number 
     df_chicago_unique['Telephone Number'] = df_chicago_unique['Telephone Number'].apply(
     lambda x: re.sub(r'\s+', '', x) if pd.notnull(x) else ''  # Remove all spaces
@@ -96,7 +96,7 @@ def join_health_df():
     cleaned_data.to_csv("data/preprocessed/unified_community_health_data.csv", index=False)
     zip_counts = cleaned_data["Zip Code"].value_counts().reset_index()
     zip_counts.columns = ["Zip Code", "cnt_comm_health_ctr"]
-    #zip_counts.to_csv("../data/preprocessed/unified_community_health_count.csv", index=False)
+    zip_counts.to_csv("data/preprocessed/unified_community_health_count.csv", index=False)
     return zip_counts
 
 # join_health_df()

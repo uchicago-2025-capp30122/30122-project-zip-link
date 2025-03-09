@@ -18,8 +18,8 @@ import dash_leaflet as dl
 
 #CSV ==> ShapeFile
 #loading the data
-df_chicago_unique = pd.read_csv("demo_data_for_visualization.csv")
-df_chicago_unique['Zip code'] = df_chicago_unique['Zip code'].astype(str)
+df_chicago_unique = pd.read_csv("../data/preprocessed/zipatlas_bulk_merge.csv")
+df_chicago_unique['Zip Code'] = df_chicago_unique['Zip Code'].astype(str)
 
 #creating the shapefile
 df_shapefile = pd.read_csv("Boundaries_-_ZIP_Codes_20250222.csv")
@@ -41,7 +41,7 @@ gdf_zcta = gpd.read_file(zcta_shapefile)
 gdf_zcta['ZIP'] = gdf_zcta['ZIP'].astype(str)
 
 #merging the data with the shapefile
-merged_gdf = gdf_zcta.merge(df_chicago_unique, left_on='ZIP', right_on='Zip code')
+merged_gdf = gdf_zcta.merge(df_chicago_unique, left_on='ZIP', right_on='Zip Code')
 
 
 #computing centroids for labeling
@@ -59,16 +59,16 @@ fig = px.choropleth(merged_gdf,
                     geojson = merged_gdf.geometry,
                     locations = merged_gdf.index,
                     color = "median_property_prices",
-                    hover_name = "Zip code",
+                    hover_name = "Zip Code",
                     hover_data={"median_property_prices": ':$,.0f',
-                                "accessibility_index": ':.2f',
+                                "Normalized Accessibility Index": ':.2f',
                                 "poverty_levels":':.2f',
-                                "Unemployment rate":':.2f'},
+                                "unemployment_rates":':.2f'},
                     color_continuous_scale = "Blues",
                     labels = {"median_property_prices": "Median Property Price (USD)",
-                                "accessibility_index": "Accessibility Index",
+                                "Normalized Accessibility Index": "Accessibility Index",
                                 "poverty_levels": "Poverty Level",
-                                "Unemployment rate": "Unemployment Rate"})
+                                "unemployment_rates": "Unemployment Rate"})
 
 #layout for display
 fig.update_geos(fitbounds="locations", visible=False, projection_type="mercator")
@@ -88,8 +88,8 @@ app.layout = html.Div([
                 {'label': 'Median Property Prices', 'value': 'median_property_prices'},
                 {'label': 'Number of Schools', 'value': 'school_count'},
                 {'label': 'Number of Parks', 'value': 'park_count'},
-                {'label': 'Number of Hospitals & Community Health Centers', 'value': 'cnt_comm_health_ctr'},
-                {'label': 'Number of Public Transport Transits', 'value': "num_public_transit_stops"},
+                {'label': 'Number of Health Services', 'value': 'total_health_services'},
+                {'label': 'Number of Public Transport Transits', 'value': 'num_public_transit'},
                 {'label': 'Number of Grocery Stores', 'value': 'grocery_store_count'},
                 {'label': 'Poverty Levels', 'value': 'poverty_levels'},
                 {'label': 'Unemployment rate', 'value': 'Unemployment rate'}
@@ -111,12 +111,10 @@ app.layout = html.Div([
     Output("choropleth-map", "figure"),
     Input("variable-dropdown", "value")
 )
-def update_map(selected_variable):
-
-    variable_titles = {
+variable_titles = {
     "median_property_prices": "Median Property Prices",
     "school_count": "Number of Schools",
-    "cnt_comm_health_ctr": "Number of Hospitals & Community Health Centers",
+    "total_health_services": "Number of Health Services",
     "num_public_transit_stops": "Number of Public Transport Transits",
     "grocery_store_count": "Number of Grocery Stores",
     "park_count": "Number of Parks",
@@ -153,13 +151,14 @@ def update_map(selected_variable):
             ticks="outside",
         )
     )
+    )
 
     #to add the zip code labels on the map
     fig.add_trace(go.Scattergeo(
         lon=merged_gdf["lon"],
         lat=merged_gdf["lat"],
         mode="text",
-        text=merged_gdf["Zip code"],
+        text=merged_gdf["Zip Code"],
         textfont={"size": 6, "color": "black"},
         showlegend=False
     ))

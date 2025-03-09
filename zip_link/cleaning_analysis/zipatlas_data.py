@@ -75,7 +75,7 @@ def create_zipatlas_data():
 
 # Merge all data - ZipAtlas and All Other Data Sources
 
-def zip_health_bulk_data():
+def zip_bulk_data():
     # Load the datasets into DataFrames
     zipatlas_df = create_zipatlas_data()
     comm_health_df = join_health_df()
@@ -84,16 +84,16 @@ def zip_health_bulk_data():
     public_transit_count = clean_publictransit_data("data/raw/public_transit/publictransit_2024.csv")
     hospital_count = clean_hospital_data("data/raw/Hospitals/hospitals.csv")
     school_count = clean_school_data("data/raw/Schools/schools_data.csv")
-    #population = clean_population_data("data/raw/Population/Population_data.csv")
+    Population = clean_population_data("data/raw/Population/Population_Data.csv")
 
 
-    dfs = [zipatlas_df, comm_health_df, parks_count, grocery_store_count, public_transit_count, hospital_count, school_count]
+    dfs = [zipatlas_df, comm_health_df, parks_count, grocery_store_count, public_transit_count, hospital_count, school_count, Population]
     dfs = [df.astype({'Zip Code': 'str'}) for df in dfs] # Ensure Zip Code is a string in all dfs
     # Perform left joins iteratively
     final_df = reduce(lambda left, right: pd.merge(left, right, on='Zip Code', how='left'), dfs)
     final_df = final_df.fillna(0)
     final_df['total_healthcare_services'] = final_df['cnt_comm_health_ctr'] + final_df['hospital_count']
-    #final_df = final_df.drop(['cnt_comm_health_ctr', 'hospital_count'])
+    final_df = final_df.drop(['cnt_comm_health_ctr', 'hospital_count'], axis=1)
 
     # Convert all columns other than Zip Code to float
     for col in final_df.columns:
@@ -106,7 +106,45 @@ def zip_health_bulk_data():
     final_df.to_csv("data/preprocessed/zipatlas_bulk_merge.csv", index=False)
     print(f"Zip and Bulk Data merged and successfully saved.")
 
-zip_health_bulk_data()
+zip_bulk_data()
+
+def calculate_accessibility_index():
+    """
+    Computes the Accessibility Index using essential service counts per ZIP code, normalizes it, and updates the combined dataset.
+    """
+    df = pd.read_csv("data/preprocessed/zipatlas_bulk_merge.csv")
+
+    # Compute total services count per ZIP code
+    df["total_services"] = (
+        df["total_healthcare_services"]
+        + df["park_count"]
+        + df["grocery_store_count"]
+        + df["num_public_transit_stops"]
+        + df["school_count"]
+    )
+
+    # Compute Accessibility Index
+    df["Accessibility Index"] = df["total_services"] / df["Population"]
+
+    # Debugging: Print min/max values
+    min_index = df["Accessibility Index"].min()
+    max_index = df["Accessibility Index"].max()
+    
+    # Round (max - min) to 6 decimal places for better precision
+    max_min_diff = round(max_index - min_index, 6)
+    print(f"Min Accessibility Index: {min_index}, Max Accessibility Index: {max_index}, Difference: {max_min_diff}")
+
+    # Normalize the Accessibility Index 
+    df["Normalized Accessibility Index"] = (
+        (df["Accessibility Index"] - min_index) / max_min_diff
+    ).round(2)
+    
+    # Save updated combined dataset
+    df.to_csv("data/preprocessed/zipatlas_bulk_merge.csv", index=False)
+    print("Accessibility Index calculated, normalized, and added to combined dataset.")
+    return df[["Zip Code", "Accessibility Index", "Normalized Accessibility Index"]]
+
+calculate_accessibility_index()
 
 
 
