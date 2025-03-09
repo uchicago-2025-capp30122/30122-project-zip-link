@@ -56,19 +56,19 @@ def update_scatter(selected_var):
     fig = px.scatter(
         df, 
         x=selected_var, 
-        y="Accessibility Index", 
+        y="Normalized Accessibility Index", 
         title=f"{selected_var.replace('_', ' ').title()} vs Accessibility Index",
         hover_data={
             'Zip Code': True,
             selected_var: False,
             formatted_column_name: True,
-            'Accessibility Index': True
+            'Normalized Accessibility Index': True
             #unemployment_rates_formatted_column_name: True
         }
     )
 
     # Add horizontal line for average unemployment rate - TEMPLATE ONLY! We actually want to plot the accessibility index
-    avg_accessibility_index = df["Accessibility Index"].mean()
+    avg_accessibility_index = df["Normalized Accessibility Index"].mean()
     fig.add_hline(
         y=avg_accessibility_index, 
         line_dash="dash", 

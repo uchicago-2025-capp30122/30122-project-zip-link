@@ -11,7 +11,7 @@ df = pd.read_csv(data_path)
 non_discrete_vars = [
     "median_property_prices", "median_housing_costs", "owner_median_housing_costs",
     "renter_median_housing_costs", "housing_cost_perc_income", "unemployment_rates",
-    "poverty_levels", "Population", "Normalized Accessibility Index"
+    "poverty_levels"
 ] 
 
 # Dash App
