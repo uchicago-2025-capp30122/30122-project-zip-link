@@ -43,7 +43,6 @@ gdf_zcta['ZIP'] = gdf_zcta['ZIP'].astype(str)
 #merging the data with the shapefile
 merged_gdf = gdf_zcta.merge(df_chicago_unique, left_on='ZIP', right_on='Zip Code')
 
-
 #computing centroids for labeling
 merged_gdf["lon"] = merged_gdf.geometry.centroid.x
 merged_gdf["lat"] = merged_gdf.geometry.centroid.y
@@ -55,7 +54,7 @@ geojson_data = merged_gdf.to_json()
 non_discrete_vars = [
     "median_property_prices", "median_housing_costs", "owner_median_housing_costs",
     "renter_median_housing_costs", "housing_cost_perc_income", "unemployment_rates",
-    "poverty_levels"
+    "poverty_levels", "Normalized Accessibility Index"
 ] 
 
 format_dict = {
@@ -65,7 +64,8 @@ format_dict = {
     "renter_median_housing_costs": lambda x: f"${x:,.2f}",
     "housing_cost_perc_income": lambda x: f"{x:.2f}%",
     "unemployment_rates": lambda x: f"{x:.2f}%",
-    "poverty_levels": lambda x: f"{x:.2f}%"
+    "poverty_levels": lambda x: f"{x:.2f}%",
+    "Normalized Accessibility Index": lambda x: x 
 }
 
 #creating the Dash app
@@ -114,6 +114,7 @@ def update_visualizations(selected_variable):
         "housing_cost_perc_income": "Housing Cost % of Income",
         "unemployment_rates": "Unemployment Rates",
         "poverty_levels": "Poverty Levels",
+        'Normalized Accessibility Index': 'Normalized Accessibility Index'
     }
 
     # Choropleth Map
