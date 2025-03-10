@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 # Load the preprocessed data
-data_path = "data/preprocessed/zipatlas_bulk_merge.csv"
+data_path = "../data/preprocessed/zipatlas_bulk_merge.csv"
 df = pd.read_csv(data_path)
 
 # List of non-discrete variables
