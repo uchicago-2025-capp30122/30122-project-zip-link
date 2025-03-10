@@ -131,7 +131,7 @@ def update_visualizations(selected_variable):
                     "Normalized Accessibility Index": ':.2f',
                     "poverty_levels":':.2f',
                     "unemployment_rates":':.2f'},
-        color_continuous_scale="Blues",
+        color_continuous_scale="Viridis",
         labels={selected_variable: variable_titles.get(selected_variable, selected_variable),
                 "median_property_prices": "Median Property Price (USD)",
                 "Normalized Accessibility Index": "Accessibility Index",
@@ -164,7 +164,7 @@ def update_visualizations(selected_variable):
     #figure size
     fig_map.update_layout(
         height = 750,
-        width = 1300,
+        width = 1680,
         margin = {"r":50, "t":50, "l":0, "b":0}
     )
 
@@ -198,4 +198,4 @@ def update_visualizations(selected_variable):
 
 # Run the app
 if __name__ == "__main__":
-    app.run_server(debug=True, port=8051)
+    app.run_server(debug=True, port=8056)
