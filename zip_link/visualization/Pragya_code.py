@@ -34,14 +34,18 @@ app.layout = html.Div(style={"backgroundColor": "#f4f4f4", "padding": "20px"}, c
     # Abstract or brief description below the title
     html.P("This dashboard examines the connection between housing prices and various economic indicators, including housing costs, unemployment rates, poverty rates, and access to essential services. We focus on five key services: healthcare, schools, public transit, grocery stores, and parks within Chicago. Using this data, we have developed an Accessibility Index to investigate how it correlates with these economic factors across different Zip Codes in the city. Feel free to select the variables you'd like to visualize and explore their distribution across the city. Enjoy exploring!", 
            style={"textAlign": "left", "fontSize": "16px", "color": "#888", "marginTop": "10px"}),
-
+    
+    html.Div([
     html.Label("Select Variable:"),
     dcc.Dropdown(
         id="variable-dropdown",
         options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in df.columns if var not in ["Zip Code", "lon", "lat"]],
         value="median_property_prices",
-        clearable=False
+        clearable=False,
+        style={"width": "100%", "margin": "auto", "backgroundColor": "#ffffff", "border": "1px solid #ddd"}
     ),
+    ], style={"textAlign": "center", "padding": "20px"}),
+
 
     dcc.Graph(id="choropleth-map"),
     dcc.Graph(id="scatter-plot"),
@@ -135,4 +139,4 @@ def update_charts(zip1, zip2):
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8051)
+    app.run_server(debug=True, port=8052)
