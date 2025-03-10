@@ -49,9 +49,9 @@ app.layout = html.Div(style={"backgroundColor": "#041C24", "padding": "20px"}, c
 
     # Abstract or brief description below the title
     html.P("This dashboard examines the connection between housing prices in Chicago and the accessibility to essential services at a zip-code level. We focus on five key services: healthcare, schools, public transit, grocery stores, and parks to calculate an Accessibility Index, which encapsulates how easily people can reach these essential services within a given area. We've also included additional economic indicators such as unemployment rates and poverty levels to extract any other relevant insights. Feel free to select the variables you'd like to visualize and let us know what you think. Enjoy exploring!", 
-           style={"textAlign": "left", "fontSize": "20px", "color": "#E1E1E8", "marginTop": "10px", "font-family": "Times, sans-serif"}),
+           style={"textAlign": "left", "fontSize": "17px", "color": "#E1E1E8", "marginTop": "10px", "font-family": "Times, sans-serif"}),
     
-    # Dropdown to select variable for both maps
+    # Dropdown to select variable for both map and scatter
     html.Div([
         html.Label("Select Variable:", style={"fontSize": "18px", "color": "#E1E1E8"}),
         dcc.Dropdown(
