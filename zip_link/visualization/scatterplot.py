@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.express as px
 
 # Load the preprocessed data for visualization
-data_path = "data/preprocessed/zipatlas_bulk_merge.csv"
+data_path = "../data/preprocessed/zipatlas_bulk_merge.csv"
 df = pd.read_csv(data_path)
 
 # List of non-discrete variables from ZipAtlas
