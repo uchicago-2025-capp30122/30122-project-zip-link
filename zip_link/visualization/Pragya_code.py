@@ -79,7 +79,7 @@ app.layout = html.Div(style={"backgroundColor": "#f4f4f4", "padding": "20px"}, c
 def update_maps(selected_variable):
     fig_map = px.choropleth(
         merged_gdf, geojson=merged_gdf.geometry, locations=merged_gdf.index, color=selected_variable,
-        hover_name="Zip Code", color_continuous_scale="Blues"
+        hover_name="Zip Code", color_continuous_scale="Viridis"
     )
     fig_map.update_geos(fitbounds="locations", visible=False)
     
@@ -97,7 +97,7 @@ def update_maps(selected_variable):
     # Figure size
     fig_map.update_layout(
         height=750,
-        width=1300,
+        width=1680,
         margin={"r": 50, "t": 50, "l": 0, "b": 0}
     )
     
@@ -139,4 +139,4 @@ def update_charts(zip1, zip2):
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8052)
+    app.run_server(debug=True, port=8056)
