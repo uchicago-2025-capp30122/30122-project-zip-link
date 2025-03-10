@@ -161,6 +161,13 @@ def update_visualizations(selected_variable):
         hoverinfo="skip"
     ))
 
+    #figure size
+    fig_map.update_layout(
+        height = 750,
+        width = 1300,
+        margin = {"r":50, "t":50, "l":0, "b":0}
+    )
+
     # Scatter Plot
     formatted_column_name = selected_variable.replace('_', ' ').title()
     df_chicago_unique[formatted_column_name] = df_chicago_unique[selected_variable].apply(format_dict[selected_variable])
