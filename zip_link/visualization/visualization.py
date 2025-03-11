@@ -102,7 +102,7 @@ app.layout = html.Div([
 
     #choropleth Map (Plotly)
     html.Div([
-        dcc.Graph(id="choropleth-map", figure=fig, style={"position": "relative", "zIndex": 1})
+        dcc.Graph(id="choropleth-map", figure=fig, style={"position": "relative", "zIndex": 1},config={'scrollZoom': True})
     ])
 ])
 
@@ -124,7 +124,7 @@ def update_map(selected_variable):
     "poverty_levels": "Poverty Levels",
     }
     
-    fig = px.choropleth(
+    fig = px.choropleth_mapbox(
         merged_gdf,
         geojson=merged_gdf.geometry,
         locations=merged_gdf.index,
@@ -141,7 +141,12 @@ def update_map(selected_variable):
                 "Accessibility Index": "Accessibility Index",
                 "poverty_levels": "Poverty Level",
                 "unemployment_rates": "Unemployment Rate"},
+        opacity=0.85,
+        center={"lat": 41.8500, "lon": -87.6000},
+        zoom=9.69,
+        mapbox_style="open-street-map"
     )
+
     fig.update_geos(fitbounds="locations", visible=False, projection_type="mercator")
 
     fig.update_layout(
@@ -155,19 +160,18 @@ def update_map(selected_variable):
     )
 
     #to add the zip code labels on the map
-    fig.add_trace(go.Scattergeo(
-        lon=merged_gdf["lon"],
-        lat=merged_gdf["lat"],
-        mode="text",
-        text=merged_gdf["Zip Code"],
-        textfont={"size": 7, "color": "black"},
-        showlegend=False,
-        hoverinfo="skip"
+    fig.add_trace(go.Scattermapbox(
+    lon=merged_gdf["lon"],
+    lat=merged_gdf["lat"],
+    mode="text",
+    text=merged_gdf["Zip Code"],
+    textfont={"size": 10, "color": "black"},
+    showlegend=False
     ))
 
     #figure size
     fig.update_layout(
-        height = 750,
+        height = 790,
         width = 1700,
         margin = {"r":50, "t":50, "l":0, "b":0}
     )
