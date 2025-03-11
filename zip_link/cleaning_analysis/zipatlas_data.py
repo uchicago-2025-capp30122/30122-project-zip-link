@@ -5,7 +5,7 @@ import re
 from functools import reduce
 from zip_link.cleaning_analysis.bulk_data_processing import clean_parks_data, clean_grocery_data, clean_publictransit_data, clean_hospital_data, clean_school_data, clean_population_data
 from zip_link.cleaning_analysis.unified_community_health import join_health_df 
-from zip_link.cleaning_analysis.Accessibility_Index import calculate_accessibility_index
+from zip_link.cleaning_analysis.accessibility_index import calculate_accessibility_index
 
 
 def scrape_zipatlas(url, output_csv):

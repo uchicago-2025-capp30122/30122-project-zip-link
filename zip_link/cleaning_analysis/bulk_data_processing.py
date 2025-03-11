@@ -46,6 +46,7 @@ def clean_publictransit_data(path):
     df = df[df['ZCTA20'].str.startswith('606')]
     df= df[['ZCTA20', 'COUNT_NTM_STOPS']]
     df.columns = ['Zip Code', 'num_public_transit_stops']
+    df.to_csv("data/preprocessed/public_transit_data.csv", index=False)
     return df 
 
 def clean_hospital_data(path):

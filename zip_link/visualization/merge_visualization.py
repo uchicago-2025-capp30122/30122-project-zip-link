@@ -28,7 +28,7 @@ merged_gdf["lat"] = merged_gdf.geometry.centroid.y
 non_discrete_vars = [
     "median_property_prices", "median_housing_costs", "owner_median_housing_costs",
     "renter_median_housing_costs", "housing_cost_perc_income", "unemployment_rates",
-    "poverty_levels", "Normalized Accessibility Index"
+    "poverty_levels", "park_count", "total_healthcare_services", "num_public_transit_stops", "grocery_store_count" ,"school_count", "Normalized Accessibility Index"
 ] 
 format_dict = {
     "median_property_prices": lambda x: f"${x:,.2f}",
@@ -38,6 +38,11 @@ format_dict = {
     "housing_cost_perc_income": lambda x: f"{x:.2f}%",
     "unemployment_rates": lambda x: f"{x:.2f}%",
     "poverty_levels": lambda x: f"{x:.2f}%",
+    "park_count": lambda x:x,
+    "total_healthcare_services": lambda x:x,
+    "num_public_transit_stops": lambda x:x, 
+    "grocery_store_count": lambda x:x,
+     "school_count": lambda x:x,
     "Normalized Accessibility Index": lambda x: x 
 }
 
@@ -106,7 +111,13 @@ def update_visualizations(selected_variable):
         "housing_cost_perc_income": "Housing Cost % of Income",
         "unemployment_rates": "Unemployment Rates",
         "poverty_levels": "Poverty Levels",
-        'Normalized Accessibility Index': 'Normalized Accessibility Index'
+        'school_count': "Number of Schools",
+        'park_count': "Number of Parks",
+        "total_healthcare_services": "Number of Health Services",
+        "num_public_transit_stops": "Number of Public Transport Transits",
+        "grocery_store_count": 'Number of Grocery Stores',
+        "poverty_levels": 'Poverty Levels',
+        "Normalized Accessibility Index": "Normalized Accessibility Index"
     }
 
     fig_map = px.choropleth(
@@ -203,4 +214,4 @@ def update_bar_charts(zip1, zip2):
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8056)
+    app.run_server(debug=True, port=8057)
