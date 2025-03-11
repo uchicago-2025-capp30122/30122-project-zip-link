@@ -120,7 +120,7 @@ def update_visualizations(selected_variable):
         "Normalized Accessibility Index": "Normalized Accessibility Index"
     }
 
-    fig_map = px.choropleth(
+    fig_map = px.choropleth_mapbox(
         merged_gdf,
         geojson=merged_gdf.geometry,
         locations=merged_gdf.index,
@@ -130,7 +130,11 @@ def update_visualizations(selected_variable):
             selected_variable: False,
             formatted_column_name: True,
             'Normalized Accessibility Index': True},
-        color_continuous_scale="Viridis_r"
+        color_continuous_scale="Viridis_r",
+        opacity=0.85,
+        center={"lat": 41.8500, "lon": -87.6000},
+        zoom=9.69,
+        mapbox_style="open-street-map"
     )
 
     fig_map.update_geos(fitbounds="locations", visible=False)
@@ -145,14 +149,13 @@ def update_visualizations(selected_variable):
     )
     
     # Add zip code labels
-    fig_map.add_trace(go.Scattergeo(
-        lon=merged_gdf["lon"],
-        lat=merged_gdf["lat"],
-        mode="text",
-        text=merged_gdf["Zip Code"],
-        textfont={"size": 7, "color": "black"},
-        showlegend=False,
-        hoverinfo="skip"
+    fig_map.add_trace(go.Scattermapbox(
+    lon=merged_gdf["lon"],
+    lat=merged_gdf["lat"],
+    mode="text",
+    text=merged_gdf["Zip Code"],
+    textfont={"size": 10, "color": "black"},
+    showlegend=False
     ))
 
     # Figure size
