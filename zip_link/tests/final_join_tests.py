@@ -14,9 +14,9 @@ def test_data():
     parks_count = clean_parks_data("data/raw/parks/CPD_Parks_2025.csv")
     grocery_store_count = clean_grocery_data("data/raw/grocery_stores/grocery_stores_data.csv")
     public_transit_count = clean_publictransit_data("data/raw/public_transit/publictransit_2024.csv")
-    hospital_count = clean_hospital_data("data/raw/Hospitals/hospitals.csv")
-    school_count = clean_school_data("data/raw/Schools/schools_data.csv")
-    Population = clean_population_data("data/raw/Population/Population_Data.csv")
+    hospital_count = clean_hospital_data("data/raw/hospitals/hospitals.csv")
+    school_count = clean_school_data("data/raw/schools/schools_data.csv")
+    Population = clean_population_data("data/raw/population/Population_Data.csv")
 
     dfs = [zipatlas_df, comm_health_df, parks_count, grocery_store_count, public_transit_count, hospital_count, school_count, Population]
     dfs = [df.astype({'Zip Code': 'str'}) for df in dfs]  # Ensure Zip Code is a string in all dfs

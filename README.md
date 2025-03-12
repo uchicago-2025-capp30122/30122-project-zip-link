@@ -16,7 +16,7 @@ Zip & Link analyzes the relationship between essential services and housing affo
 3. Run uv run python -m cleaning_analysis.zipatlas_data to scrape all the data, clean and preprocess data and obtain final dataset with zip code, housing prices and other economic indicators, essential services count and the Accessibility Index
 4. Next, run uv run python -m visualization.merge_visualization to get the Dash app running on http://127.0.0.1:8057 
 5. Select different variables, explore how the distribution across Chicago changes on the map, see how the variables is related to the Accessibility Index on the scatterplot, and even compare 2 different zip codes!
-7. To ensure all our data is running correctly, run our tests uv run python tests/___.py
+7. To ensure all our data is running correctly, run our tests uv run pytest tests/final_join_tests.py tests/healthctr_tests.py tests/parks_tests.py tests/grocery_stores_tests.py tests/merge_visualization_tests.py tests/publictransit_tests.py tests/schools_tests.py tests/zipatlas_scrape_tests.py. We have provided tests for the ingestion of all our data sources, data reconciliation as well as data visualizations.
 
 ## Data Citations 
 
