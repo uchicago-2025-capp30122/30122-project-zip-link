@@ -1,11 +1,11 @@
 import pandas as pd
 
-def calculate_accessibility_index():
+def calculate_accessibility_index(path):
     """
      Computes the Accessibility Index by normalizing individual service counts per ZIP code,
      then using these normalized values to compute the index.
     """
-    df = pd.read_csv("data/preprocessed/zipatlas_bulk_merge.csv")
+    df = pd.read_csv(path)
 
     # List of variables to normalize
     service_columns = [
