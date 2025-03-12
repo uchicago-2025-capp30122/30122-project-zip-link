@@ -54,11 +54,6 @@ def test_format_phone(phone, expected_phone):
     formatted_phone = formatted_phone.group() if formatted_phone else ""
     assert formatted_phone == expected_phone, f"Expected {expected_phone}, got {formatted_phone}"
 
-# def test_process_health_data(health_data):
-#     """Tests the process_health_data function."""
-#     health_data.to_csv("test_health_data.csv", index=False)
-#     result = process_health_data("test_health_data.csv")
-#     assert list(result["Zip Code"]) == ["60601"]  # Should exclude missing ZIP row
 
 def test_process_health_data(health_data, tmpdir):
     """Tests the process_health_data function using a temporary file."""
@@ -71,13 +66,6 @@ def test_process_health_data(health_data, tmpdir):
     # Assert the expected output
     assert list(result["Zip Code"]) == ["60601"]  # Should exclude missing ZIP row
 
-
-# def test_get_hrsa_data(hrsa_data):
-#     """Tests the get_hrsa_data function."""
-#     hrsa_data.to_csv("test_hrsa_data.csv", index=False)
-#     result = get_hrsa_data("test_hrsa_data.csv")
-#     assert list(result["Zip Code"]) == ["60603"]
-#     assert list(result["Telephone Number"]) == ["312-555-9876"]
 
 def test_get_hrsa_data(hrsa_data, tmpdir):
     """Tests the get_hrsa_data function using a temporary file."""
