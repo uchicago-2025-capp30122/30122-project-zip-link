@@ -26,12 +26,15 @@ merged_gdf["lon"] = merged_gdf.geometry.centroid.x
 merged_gdf["lat"] = merged_gdf.geometry.centroid.y
 
 
-
+# Variables to be visualized on map and scatterplot
 non_discrete_vars = [
     "median_property_prices", "median_housing_costs", "owner_median_housing_costs",
     "renter_median_housing_costs", "housing_cost_perc_income", "unemployment_rates",
-    "poverty_levels", "park_count", "total_healthcare_services", "num_public_transit_stops", "grocery_store_count" ,"school_count", "Normalized Accessibility Index"
+    "poverty_levels", "park_count", "total_healthcare_services", "num_public_transit_stops", 
+    "grocery_store_count" ,"school_count", "Normalized Accessibility Index"
 ] 
+
+# Formats to be applied to each of these variables
 format_dict = {
     "median_property_prices": lambda x: f"${x:,.2f}",
     "median_housing_costs": lambda x: f"${x:,.2f}",
@@ -49,6 +52,7 @@ format_dict = {
 }
 
 app = dash.Dash(__name__)
+
 # App layout
 app.layout = html.Div(style={"backgroundColor": "#041C24", "padding": "20px"}, children=[
     html.H1("Zip & Link: Exploring Housing Prices and Access to Essential Services in Chicago", 
@@ -70,10 +74,12 @@ app.layout = html.Div(style={"backgroundColor": "#041C24", "padding": "20px"}, c
         ),
     ], style={"textAlign": "center", "padding": "20px"}),
 
+    # First 2 visualizations
 
     dcc.Graph(id="choropleth-map"),
     dcc.Graph(id="scatter-plot"),
 
+     # Dropdowns for 3rd visualization: Horizontal Bar Chart 
     html.Label("Select First ZIP Code:",style={"fontSize": "18px", "color": "#E1E1E8"}),
     dcc.Dropdown(
         id='zip1-selector',
@@ -90,16 +96,19 @@ app.layout = html.Div(style={"backgroundColor": "#041C24", "padding": "20px"}, c
         clearable=False
     ),
 
+    # Horizontal bar charts for comparison 
+
     dcc.Graph(id='price-chart'),
     dcc.Graph(id='housing-cost-chart'),
     dcc.Graph(id='economic-indicators-chart')
 ])
 
-# Callback to update maps
+# Callback to update visualizations
 @app.callback(
     [Output("choropleth-map", "figure"), Output("scatter-plot", "figure")],
     Input("variable-dropdown", "value")
 )
+
 def update_visualizations(selected_variable):
 
     formatted_column_name = selected_variable.replace('_', ' ').title()
@@ -122,6 +131,7 @@ def update_visualizations(selected_variable):
         "Normalized Accessibility Index": "Normalized Accessibility Index"
     }
 
+    # Set up Choropleth Map
     fig_map = px.choropleth_map(
         merged_gdf,
         geojson=merged_gdf.geometry,
@@ -133,11 +143,6 @@ def update_visualizations(selected_variable):
             formatted_column_name: True,
             'Normalized Accessibility Index': True},
         color_continuous_scale="Blues",
-        # labels={selected_variable: variable_titles.get(selected_variable, selected_variable),
-        #         "median_property_prices": "Median Property Price (USD)",
-        #         "Accessibility Index": "Accessibility Index",
-        #         "poverty_levels": "Poverty Level",
-        #         "unemployment_rates": "Unemployment Rate"},
         opacity=0.8,
         center={"lat": 41.8500, "lon": -87.6000},
         zoom=9.69,
@@ -152,6 +157,7 @@ def update_visualizations(selected_variable):
         coastlinecolor="black"
     )
 
+    # Customise layout
     fig_map.update_layout(
         title=f"{variable_titles.get(selected_variable, selected_variable)} in Chicago by Zip Code",
         geo=dict(showcoastlines=True, coastlinecolor="Blue"),
@@ -181,11 +187,12 @@ def update_visualizations(selected_variable):
         margin={"r": 50, "t": 50, "l": 0, "b": 0}
     )
     
-    # Scatter Plot
+    # Set Up Scatter Plot
 
+    # Get desired format of selected variable
     df[formatted_column_name] = df[selected_variable].apply(format_dict[selected_variable])
 
-
+    # Visualize Normalized Accessibility Index against selected var 
     fig_scatter = px.scatter(
         df,
         x=selected_variable,
@@ -199,6 +206,7 @@ def update_visualizations(selected_variable):
         }
     )
 
+    # Set up horizontal red line to show avg Normalized Accessibility Index in Chicago 
     avg_accessibility_index = df["Normalized Accessibility Index"].mean()
     fig_scatter.add_hline(
         y=avg_accessibility_index,
@@ -207,6 +215,8 @@ def update_visualizations(selected_variable):
         annotation_text="Average Accessibility Index",
         annotation_position="top left"
     )
+
+    # Output both map and scatterplot 
     return fig_map, fig_scatter
 
 # Callback to update bar charts
