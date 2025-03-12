@@ -1,23 +1,49 @@
 
 import pytest
+import requests
 import pandas as pd
 import re
 from zip_link.cleaning_analysis.schools_data import extract_zip
+
+#30122-project-zip-link/zip_link$ uv run pytest tests/schools_tests.py
+
+URL = "https://www.cps.edu/api/v1/search/results"
+HEADERS = {"Content-Type": "application/json"}
+
+def test_api_response():
+    """
+    Tests if the response from the API is valid
+    """
+    response = requests.post(URL, headers=HEADERS, json={
+        "searchTerm": "",
+        "pageSize": 1,
+        "pageNumber": 1,
+        "facets": [],
+        "context": "Schools",
+        "sortField": 1,
+        "sortDirection": 1,
+        "dateSortRelevanceFilter": 0,
+        "contentId": "10375"
+    })
+    assert response.status_code == 200, f"API request failed. Status :{response.status_code}"
 
 
 @pytest.mark.parametrize(
     "address, expected_zip",
     [
-        ("615 W Kemper Pl, Chicago, IL 60614", "60614"),  #valid ZIP
-        ("24 W Walton St, Chicago, IL 60610", "60610"),   #valid ZIP
-        ("700 S State St, Chicago, IL 60605", "60605"),   #valid ZIP
-        ("100 Main St, Springfield, IL 62701", "62701"),  #valid ZIP
-        ("500 E Randolph St, Chicago, IL 60601", "60601"),#valid ZIP
-        ("400 W Diversey Pkwy, Chicago, IL", "N/A"),      #missing ZIP
+        ("615 W Kemper Pl, Chicago, IL 60614", "60614"),   #valid ZIP
+        ("24 W Walton St, Chicago, IL 60610", "60610"),    #valid ZIP
+        ("700 S State St, Chicago, IL 60605", "60605"),    #valid ZIP
+        ("100 Main St, Springfield, IL 62701", "62701"),   #valid ZIP
+        ("500 E Randolph St, Chicago, IL 60601", "60601"), #valid ZIP
+        ("400 W Diversey Pkwy, Chicago, IL", "N/A"),       #missing ZIP
     ]
 )
+
 def test_extract_zip(address, expected_zip):
-    """Tests if extract_zip correctly extracts a 5-digit ZIP code."""
+    """
+    Tests if the extracted zip code has 5-digits
+    """
     _, _, zip_code = extract_zip(address)
     
     if zip_code != "N/A":
@@ -41,9 +67,11 @@ valid_zip_codes = {
     "60696", "60697", "60699", "60701", "60707", "60827"
 }
 
-#validity of zip codes
 def test_zip_codes_in_valid_range():
-    df = pd.read_csv("data/raw/Schools/schools_data.csv")
+    """
+    Tests if the extracted zip code is from Chicago
+    """
+    df = pd.read_csv("data/raw/schools/schools_data.csv")
     zip_codes = df['Zip Code'].astype(str).tolist()
     
     # Assert that every zip code is in the valid_zip_codes list
