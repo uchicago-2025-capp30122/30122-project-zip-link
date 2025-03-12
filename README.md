@@ -15,6 +15,7 @@ Our project integrates multiple data sources, each providing ZIP code-based insi
 - Key Data Points: Median Housing Prices, Owner & Renter Housing Costs, Housing Costs/Income Ratio, Unemployment Rates, Poverty Levels.
 - Challenges: Only 54 ZIP codes have property price data. Missing data for some variables in certain ZIP codes.
 - Rows: 54
+- Citation: ZipAtlas.com. “Highest Median Property Prices in Chicago by Zip Code in 2025 | Zip Atlas.” Zipatlas.com, Zipatlas.com, 2025, zipatlas.com/us/il/chicago/zip-code-comparison/highest-property-prices.htm. Accessed 12 Mar. 2025.
 
 ### Healthcare Data
 #### 1. Hospitals
@@ -23,6 +24,7 @@ Our project integrates multiple data sources, each providing ZIP code-based insi
 - Key Data Points: ZIP Code & Number of Hospitals.
 - Challenges: The dataset includes hospitals outside Chicago, requiring filtering.
 - Rows: 117 records included for Chicago, 100 records expected to be used.
+- Citation:usnews.com. “Best Hospitals in Chicago, IL Rankings | US News Best Hospitals.” Usnews.com, usnews.com, 2020, health.usnews.com/best-hospitals/area/chicago-il.
 
 #### 2. Community Health Centers
 - Sources: 
@@ -31,6 +33,7 @@ Our project integrates multiple data sources, each providing ZIP code-based insi
 - Method: Web Scraping & Data Cleaning
 - Challenges: Requires data deduplication due to multiple sources.
 - Rows: 373, but will require cleaning as some health centers are in Indiana and Wisconsin.
+- Citation: chicago.gov. www.chicago.gov/content/dam/city/depts/cdph/policy_planning/PP_Web%20Health%20Care%20Facilities%20by%20Zip%20Code.pdf. Accessed 12 Mar. 2025.
 
 ### Transportation Data
 - Source: [Institute of Social Research, University of Michigan](https://archive.icpsr.umich.edu/view/studies/38605/data-documentation)
@@ -38,6 +41,7 @@ Our project integrates multiple data sources, each providing ZIP code-based insi
 - Key Data Points: Total Population, Public Transit Stops per Capita, Stops per Square Mile.
 - Challenges: Some ZIP codes lack transit data, requiring preprocessing.
 - Rows: 56 Chicago ZIP Codes
+- Citation: Institute of Social Research, University of Michigan. “National Neighborhood Data Archive (NaNDA): Public Transit Stops by Census Tract and ZIP Code Tabulation Area, United States, 2016-2018 and 2024 | ICPSR.” Umich.edu, Umich.edu, 2016, archive.icpsr.umich.edu/view/studies/38605/data-documentation. Accessed 12 Mar. 2025.
 
 ### Grocery Stores Data
 - Source: [City of Chicago Open Data](https://data.cityofchicago.org/Health-Human-Services/Grocery-Store-Status-Map/rish-pa6g)
@@ -45,6 +49,7 @@ Our project integrates multiple data sources, each providing ZIP code-based insi
 - Key Data Points: ZIP Code & Store Names.
 - Challenges: Last updated in 2020, requiring assumptions about store continuity.
 - Rows: 264
+- Citation: City of Chicago. “Grocery Store Status Map | City of Chicago | Data Portal.” Data.cityofchicago.org, Cityofchicago, data.cityofchicago.org/Health-Human-Services/Grocery-Store-Status-Map/rish-pa6g.
 
 ### Parks & Green Spaces
 - Source: [Chicago Park District Open Data](https://data.cityofchicago.org/Parks-Recreation/Parks-Chicago-Park-District-Park-Boundaries-curren/ej32-qgdr)
@@ -52,17 +57,16 @@ Our project integrates multiple data sources, each providing ZIP code-based insi
 - Key Data Points: ZIP Code & Park Name.
 - Challenges: None, as this dataset is well-maintained.
 - Rows: 617
+- Citation: City of Chicago. “Parks - Chicago Park District Park Boundaries (Current) | City of Chicago | Data Portal.” Cityofchicago.org, Cityofchicago, 2018, data.cityofchicago.org/Parks-Recreation/Parks-Chicago-Park-District-Park-Boundaries-curren/ej32-qgdr.
 
 ### Education Data (Schools)
-- Sources: 
-  - [Public Schools](https://www.niche.com/k12/search/best-private-schools/t/chicago-cook-il/)
-  - [Private Schools](https://www.niche.com/k12/search/best-private-schools/t/chicago-cook-il/)
-- Method: Web Scraping using lxml.html
+- Sources:[Public Schools](https://www.cps.edu/search/?pageNumber=1&context=Schools&sortId=a-z)
+- Method: Scrsping from an API
 - Key Data Points: ZIP Code & Number of Schools.
 - Challenges: Extracting ZIP codes from addresses, scraping multiple pages.
 - Rows: 
-  - Public Schools: 729 records.
-  - Private Schools: 764 records.
+  - Public Schools: 649 records.
+- Citation: Chicago Public Schools. “Search | Chicago Public Schools.” Cps.edu, CPS, 2025, www.cps.edu/search/?pageNumber=1&context=Schools&sortId=a-z. Accessed 12 Mar. 2025.
 
 
 ## Data Integration
