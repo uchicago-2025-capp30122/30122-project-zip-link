@@ -155,7 +155,8 @@ def update_visualizations(selected_variable):
     mode="text",
     text=merged_gdf["Zip Code"],
     textfont={"size": 10, "color": "black"},
-    showlegend=False
+    showlegend=False,
+    hoverinfo="skip"
     ))
 
     # Figure size
@@ -217,4 +218,4 @@ def update_bar_charts(zip1, zip2):
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8057)
+    app.run_server(debug=True, port=8056)
