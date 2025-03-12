@@ -25,6 +25,8 @@ merged_gdf = gdf_zcta.merge(df, left_on='ZIP', right_on='Zip Code')
 merged_gdf["lon"] = merged_gdf.geometry.centroid.x
 merged_gdf["lat"] = merged_gdf.geometry.centroid.y
 
+
+
 non_discrete_vars = [
     "median_property_prices", "median_housing_costs", "owner_median_housing_costs",
     "renter_median_housing_costs", "housing_cost_perc_income", "unemployment_rates",
@@ -120,24 +122,37 @@ def update_visualizations(selected_variable):
         "Normalized Accessibility Index": "Normalized Accessibility Index"
     }
 
-    fig_map = px.choropleth_mapbox(
+    fig_map = px.choropleth_map(
         merged_gdf,
         geojson=merged_gdf.geometry,
         locations=merged_gdf.index,
         color=selected_variable,
         hover_name="Zip Code",
-        hover_data = {'Zip Code': True,
-            selected_variable: False,
-            formatted_column_name: True,
-            'Normalized Accessibility Index': True},
-        color_continuous_scale="Viridis_r",
-        opacity=0.85,
+        hover_data={selected_variable: ':.0f',
+                        "median_property_prices": ':$,.0f',
+                        "Accessibility Index": ':.2f',
+                        "poverty_levels":':.2f',
+                        "unemployment_rates":':.2f'},
+        color_continuous_scale="Blues",
+        labels={selected_variable: variable_titles.get(selected_variable, selected_variable),
+                "median_property_prices": "Median Property Price (USD)",
+                "Accessibility Index": "Accessibility Index",
+                "poverty_levels": "Poverty Level",
+                "unemployment_rates": "Unemployment Rate"},
+        opacity=0.8,
         center={"lat": 41.8500, "lon": -87.6000},
         zoom=9.69,
-        mapbox_style="open-street-map"
     )
 
-    fig_map.update_geos(fitbounds="locations", visible=False)
+    fig_map.update_geos(
+        fitbounds="locations", 
+        visible=False, 
+        projection_type="mercator",
+        showcountries=True,
+        showcoastlines=True,
+        coastlinecolor="black"
+    )
+
     fig_map.update_layout(
         title=f"{variable_titles.get(selected_variable, selected_variable)} in Chicago by Zip Code",
         geo=dict(showcoastlines=True, coastlinecolor="Blue"),
@@ -149,14 +164,15 @@ def update_visualizations(selected_variable):
     )
     
     # Add zip code labels
-    fig_map.add_trace(go.Scattermapbox(
-    lon=merged_gdf["lon"],
-    lat=merged_gdf["lat"],
-    mode="text",
-    text=merged_gdf["Zip Code"],
-    textfont={"size": 10, "color": "black"},
-    showlegend=False,
-    hoverinfo="skip"
+    fig_map.add_trace(go.Scattergeo(
+        lon=merged_gdf["lon"],
+        lat=merged_gdf["lat"],
+        mode="text",
+        text=merged_gdf["Zip Code"],
+        textposition="top center",
+        textfont={"size": 12, "color": "black"},
+        showlegend=False,
+        hoverinfo="skip"
     ))
 
     # Figure size
@@ -218,4 +234,4 @@ def update_bar_charts(zip1, zip2):
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8056)
+    app.run_server(debug=True, port=8051)
