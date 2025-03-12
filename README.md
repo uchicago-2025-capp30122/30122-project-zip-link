@@ -53,5 +53,5 @@ Chicago Public Schools. “Search | Chicago Public Schools.” Cps.edu, CPS, 202
 ## Data Integration
 All datasets are linked by ZIP code. 
 
-
-Thank you so much to James Turk, our CAPP 122 lecturer, for making this journey so fruitful and supporting us as we set out on this project. Hope you enjoy interacting with this visualization!
+## Acknowledgement 
+Thank you so much to James Turk, our CAPP 122 lecturer, and to Hieu Nguyen, our CAPP122 TA, for supporting and helping us as we set out on this project. We couldn't have done this without them, and are incredibly grateful :) 
