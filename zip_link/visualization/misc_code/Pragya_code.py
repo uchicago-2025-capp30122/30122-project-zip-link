@@ -25,6 +25,22 @@ merged_gdf = gdf_zcta.merge(df, left_on='ZIP', right_on='Zip Code')
 merged_gdf["lon"] = merged_gdf.geometry.centroid.x
 merged_gdf["lat"] = merged_gdf.geometry.centroid.y
 
+non_discrete_vars = [
+    "median_property_prices", "median_housing_costs", "owner_median_housing_costs",
+    "renter_median_housing_costs", "housing_cost_perc_income", "unemployment_rates",
+    "poverty_levels", "Normalized Accessibility Index"
+] 
+format_dict = {
+    "median_property_prices": lambda x: f"${x:,.2f}",
+    "median_housing_costs": lambda x: f"${x:,.2f}",
+    "owner_median_housing_costs": lambda x: f"${x:,.2f}",
+    "renter_median_housing_costs": lambda x: f"${x:,.2f}",
+    "housing_cost_perc_income": lambda x: f"{x:.2f}%",
+    "unemployment_rates": lambda x: f"{x:.2f}%",
+    "poverty_levels": lambda x: f"{x:.2f}%",
+    "Normalized Accessibility Index": lambda x: x 
+}
+
 app = dash.Dash(__name__)
 # App layout
 app.layout = html.Div(style={"backgroundColor": "#f4f4f4", "padding": "20px"}, children=[
@@ -33,17 +49,18 @@ app.layout = html.Div(style={"backgroundColor": "#f4f4f4", "padding": "20px"}, c
 
     # Abstract or brief description below the title
     html.P("This dashboard examines the connection between housing prices and various economic indicators, including housing costs, unemployment rates, poverty rates, and access to essential services. We focus on five key services: healthcare, schools, public transit, grocery stores, and parks within Chicago. Using this data, we have developed an Accessibility Index to investigate how it correlates with these economic factors across different Zip Codes in the city. Feel free to select the variables you'd like to visualize and explore their distribution across the city. Enjoy exploring!", 
-           style={"textAlign": "left", "fontSize": "16px", "color": "#888", "marginTop": "10px"}),
+           style={"textAlign": "left", "fontSize": "16px", "color": "#2a3f5f", "marginTop": "10px"}),
     
+    # Dropdown to select variable for both maps
     html.Div([
-    html.Label("Select Variable:"),
-    dcc.Dropdown(
-        id="variable-dropdown",
-        options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in df.columns if var not in ["Zip Code", "lon", "lat"]],
-        value="median_property_prices",
-        clearable=False,
-        style={"width": "100%", "margin": "auto", "backgroundColor": "#ffffff", "border": "1px solid #ddd"}
-    ),
+        html.Label("Select Variable:", style={"fontSize": "18px", "color": "#2a3f5f"}),
+        dcc.Dropdown(
+            id="variable-dropdown",
+            options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in non_discrete_vars],
+            value="median_property_prices",
+            clearable=False,
+            style={"width": "100%", "margin": "auto", "backgroundColor": "#ffffff", "border": "1px solid #ddd"}
+        ),
     ], style={"textAlign": "center", "padding": "20px"}),
 
 
@@ -76,12 +93,55 @@ app.layout = html.Div(style={"backgroundColor": "#f4f4f4", "padding": "20px"}, c
     [Output("choropleth-map", "figure"), Output("scatter-plot", "figure")],
     Input("variable-dropdown", "value")
 )
-def update_maps(selected_variable):
+def update_visualizations(selected_variable):
+
+    formatted_column_name = selected_variable.replace('_', ' ').title()
+    merged_gdf[formatted_column_name] = merged_gdf[selected_variable].apply(format_dict[selected_variable])
+
+    variable_titles = {
+        "median_property_prices": "Median Property Prices",
+        "median_housing_costs": "Median Housing Costs",
+        "owner_median_housing_costs": "Owner Median Housing Costs",
+        "renter_median_housing_costs": "Renter Median Housing Costs",
+        "housing_cost_perc_income": "Housing Cost % of Income",
+        "unemployment_rates": "Unemployment Rates",
+        "poverty_levels": "Poverty Levels",
+        'Normalized Accessibility Index': 'Normalized Accessibility Index'
+    }
+
     fig_map = px.choropleth(
-        merged_gdf, geojson=merged_gdf.geometry, locations=merged_gdf.index, color=selected_variable,
-        hover_name="Zip Code", color_continuous_scale="Viridis"
+        merged_gdf,
+        geojson=merged_gdf.geometry,
+        locations=merged_gdf.index,
+        color=selected_variable,
+        hover_name="Zip Code",
+        hover_data = {'Zip Code': True,
+            selected_variable: False,
+            formatted_column_name: True,
+            'Normalized Accessibility Index': True},
+        # hover_data={selected_variable: ':.0f',
+        #             "median_property_prices": ':$,.0f',
+        #             "Normalized Accessibility Index": ':.2f'},
+        #             #"poverty_levels":':.2f',
+        #             #"unemployment_rates":':.2f'},
+        color_continuous_scale="Viridis_r"
+        # labels={selected_variable: variable_titles.get(selected_variable, selected_variable),
+        #         "median_property_prices": "Median Property Price (USD)",
+        #         "Normalized Accessibility Index": "Accessibility Index",
+        #         "poverty_levels": "Poverty Level",
+        #         "unemployment_rates": "Unemployment Rate"},
     )
+
     fig_map.update_geos(fitbounds="locations", visible=False)
+    fig_map.update_layout(
+        title=f"{variable_titles.get(selected_variable, selected_variable)} in Chicago by Zip Code",
+        geo=dict(showcoastlines=True, coastlinecolor="Blue"),
+        coloraxis_colorbar=dict(
+            title=variable_titles.get(selected_variable, selected_variable),
+            tickformat=':$,.0f',
+            ticks="outside",
+        )
+    )
     
     # Add zip code labels
     fig_map.add_trace(go.Scattergeo(
@@ -97,22 +157,36 @@ def update_maps(selected_variable):
     # Figure size
     fig_map.update_layout(
         height=750,
-        width=1680,
+        width=1415,
         margin={"r": 50, "t": 50, "l": 0, "b": 0}
     )
     
-    fig_scatter = px.scatter(df, x=selected_variable, y="Normalized Accessibility Index", hover_name="Zip Code")
-    
-    # Add horizontal line for average Normalized Accessibility Index
+    # Scatter Plot
+
+    df[formatted_column_name] = df[selected_variable].apply(format_dict[selected_variable])
+
+
+    fig_scatter = px.scatter(
+        df,
+        x=selected_variable,
+        y="Normalized Accessibility Index",
+        title=f"{variable_titles.get(selected_variable, selected_variable)} vs Accessibility Index",
+        hover_data={
+            'Zip Code': True,
+            selected_variable: False,
+            formatted_column_name: True,
+            'Normalized Accessibility Index': True
+        }
+    )
+
     avg_accessibility_index = df["Normalized Accessibility Index"].mean()
     fig_scatter.add_hline(
-        y=avg_accessibility_index, 
-        line_dash="dash", 
-        line_color="red", 
-        annotation_text="Average Accessibility Index", 
+        y=avg_accessibility_index,
+        line_dash="dash",
+        line_color="red",
+        annotation_text="Average Accessibility Index",
         annotation_position="top left"
     )
-    
     return fig_map, fig_scatter
 
 # Callback to update bar charts
@@ -120,7 +194,7 @@ def update_maps(selected_variable):
     [Output('price-chart', 'figure'), Output('housing-cost-chart', 'figure'), Output('economic-indicators-chart', 'figure')],
     [Input('zip1-selector', 'value'), Input('zip2-selector', 'value')]
 )
-def update_charts(zip1, zip2):
+def update_bar_charts(zip1, zip2):
     df_selected = df[df["Zip Code"].isin([zip1, zip2])]
     colors = ["#1f77b4", "#85C1E9"]  # Different shades of blue
     
@@ -132,9 +206,9 @@ def update_charts(zip1, zip2):
         fig.update_layout(title=title, xaxis_title='Value', yaxis_title='Metric', barmode='group')
         return fig
     
-    fig1 = create_bar_chart(["median_property_prices"], "Comparison of Median Property Prices")
-    fig2 = create_bar_chart(["median_housing_costs", "owner_median_housing_costs", "renter_median_housing_costs"], "Comparison of Housing Costs")
-    fig3 = create_bar_chart(["housing_cost_perc_income", "poverty_levels", "unemployment_rates"], "Comparison of Economic Indicators")
+    fig1 = create_bar_chart(["median_property_prices"], "Comparison of Median Property Prices Across 2 Zip Codes")
+    fig2 = create_bar_chart(["median_housing_costs", "owner_median_housing_costs", "renter_median_housing_costs"], "Comparison of Housing Costs Across 2 Zip Codes")
+    fig3 = create_bar_chart(["housing_cost_perc_income", "poverty_levels", "unemployment_rates"], "Comparison of Economic Indicators Across 2 Zip Codes")
     return fig1, fig2, fig3
 
 # Run the app
