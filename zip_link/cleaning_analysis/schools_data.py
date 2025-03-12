@@ -9,6 +9,10 @@ URL = "https://www.cps.edu/api/v1/search/results"
 HEADERS = {"Content-Type": "application/json"}
 
 def fetch_data(page_number):
+    """
+    fetching data from the API
+    """
+
     payload = {
         "searchTerm": "",
         "pageSize": 10,
@@ -29,6 +33,9 @@ def fetch_data(page_number):
         return None
 
 def extract_zip(address):
+    """
+    extracting the zip code from the address
+    """
     if not address or "," not in address:
         return "N/A", "N/A"
     
@@ -41,6 +48,9 @@ def extract_zip(address):
     return street_address, rest, zip_code
 
 def scrape_api(total_pages=65):
+    """
+    scraping the data from the pages
+    """
     all_results = []
 
     for page in range(1, total_pages + 1):
