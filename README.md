@@ -21,7 +21,8 @@ to scrape all the data, clean and preprocess data and obtain final dataset with 
 4. Next, run 
 ```
 uv run python -m visualization.merge_visualization
-``` to get the Dash app running on http://127.0.0.1:8057 
+``` 
+to get the Dash app running on http://127.0.0.1:8057 
 5. Select different variables, explore how the distribution across Chicago changes on the map, see how the variables is related to the Accessibility Index on the scatterplot, and even compare 2 different zip codes!
 7. To ensure all our data is running correctly, run our tests 
 ```
