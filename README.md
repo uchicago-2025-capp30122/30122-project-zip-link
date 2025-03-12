@@ -108,4 +108,5 @@ We have added code for the visualization and generated a map of Chicago ZIP code
 2. Adding more details on hover (e.g., service counts, housing prices).
 3. Changing colors to reflect a gradient for better readability.
 
-# 
+# Running the project:
+1. uv run python -m visualization.merge_visualization
