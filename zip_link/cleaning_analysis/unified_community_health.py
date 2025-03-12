@@ -8,12 +8,13 @@ import jellyfish
 def convert_pdf_to_csv(pdf_path, csv_path):
     df = tabula.read_pdf(pdf_path, pages='all')[0]
     tabula.convert_into(pdf_path, csv_path, output_format="csv", pages='all')
+    print(f"Successfully converted '{pdf_path}' to '{csv_path}'")
 
-if __name__ == "__main__":
-    pdf_file_path = 'data/raw/community_health_ctr/HealthCentre1.pdf'
-    csv_file_path = 'data/raw/community_health_ctr/healthcentre_pdf.csv'
-    convert_pdf_to_csv(pdf_file_path, csv_file_path)
-    print(f"Successfully converted '{pdf_file_path}' to '{csv_file_path}'")
+# if __name__ == "__main__":
+#     pdf_file_path = 'data/raw/community_health_ctr/HealthCentre1.pdf'
+#     csv_file_path = 'data/raw/community_health_ctr/healthcentre_pdf.csv'
+#     convert_pdf_to_csv(pdf_file_path, csv_file_path)
+#     print(f"Successfully converted '{pdf_file_path}' to '{csv_file_path}'")
     
 def process_health_data(input_file):
     # Load the dataset
@@ -88,6 +89,7 @@ def fuzzy_match(df, threshold=0.85):
     return pd.DataFrame(unique_records) 
 
 def join_health_df():
+    convert_pdf_to_csv("data/raw/community_health_ctr/HealthCentre1.pdf", "data/raw/community_health_ctr/healthcentre_pdf.csv")
     pdf_data = process_health_data("data/raw/community_health_ctr/healthcentre_pdf.csv")
     hrsa_data = get_hrsa_data("data/raw/community_health_ctr/HRSA_Data.csv")
     combined_data = pd.concat([pdf_data, hrsa_data], ignore_index=True)
@@ -98,8 +100,6 @@ def join_health_df():
     zip_counts.columns = ["Zip Code", "cnt_comm_health_ctr"]
     zip_counts.to_csv("data/preprocessed/unified_community_health_count.csv", index=False)
     return zip_counts
-
-# join_health_df()
 
 
 

@@ -36,7 +36,6 @@ def calculate_accessibility_index():
     
     # Round (max - min) to 6 decimal places for better precision
     max_min_diff = round(max_index - min_index, 6)
-    print(f"Min Accessibility Index: {min_index}, Max Accessibility Index: {max_index}, Difference: {max_min_diff}")
 
     # Normalize the Accessibility Index 
     df["Normalized Accessibility Index"] = (
@@ -47,5 +46,3 @@ def calculate_accessibility_index():
     df.to_csv("data/preprocessed/zipatlas_bulk_merge.csv", index=False)
     print("Accessibility Index calculated using normalized variables and added to the dataset.")
     return df[["Zip Code", "Accessibility Index", "Normalized Accessibility Index"]]
-
-calculate_accessibility_index()
