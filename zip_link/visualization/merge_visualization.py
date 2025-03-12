@@ -9,17 +9,17 @@ from dash.dependencies import Input, Output
 import dash_leaflet as dl
 
 # Load the preprocessed data
-data_path = "../data/preprocessed/zipatlas_bulk_merge.csv"
+data_path = "data/preprocessed/zipatlas_bulk_merge.csv"
 df = pd.read_csv(data_path)
 df["Zip Code"] = df["Zip Code"].astype(str)
 
 # Load ZIP Code shapefile
-df_shapefile = pd.read_csv("Boundaries_-_ZIP_Codes_20250222.csv")
+df_shapefile = pd.read_csv("visualization/Boundaries_-_ZIP_Codes_20250222.csv")
 df_shapefile["ZIP"] = df_shapefile["ZIP"].astype(str)
 df_shapefile["the_geom"] = df_shapefile["the_geom"].apply(loads)
 gdf = gpd.GeoDataFrame(df_shapefile, geometry="the_geom", crs="EPSG:4326")
-gdf.to_file("zcta_shapefile.shp", driver="ESRI Shapefile")
-gdf_zcta = gpd.read_file("zcta_shapefile.shp")
+gdf.to_file("visualization/zcta_shapefile.shp", driver="ESRI Shapefile")
+gdf_zcta = gpd.read_file("visualization/zcta_shapefile.shp")
 gdf_zcta["ZIP"] = gdf_zcta["ZIP"].astype(str)
 merged_gdf = gdf_zcta.merge(df, left_on='ZIP', right_on='Zip Code')
 merged_gdf["lon"] = merged_gdf.geometry.centroid.x
