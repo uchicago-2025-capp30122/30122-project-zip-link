@@ -11,6 +11,7 @@ HEADERS = {"Content-Type": "application/json"}
 def fetch_data(page_number):
     """
     Fetching data from the API.
+    
     Input: the individual page number
     Output: information in json
     """
@@ -37,6 +38,7 @@ def fetch_data(page_number):
 def extract_zip(address):
     """
     Extracting the zip code from the address.
+    
     Input: an address
     Output: address, zip code
     """
@@ -52,7 +54,8 @@ def extract_zip(address):
 
 def scrape_api(total_pages=65):
     """
-    Iterating through all the pages:
+    Iterating through all the pages.
+    
     Input: 65 (total nmumber of pages)
     Output: DataFrame with the data
     """

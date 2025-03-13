@@ -36,7 +36,7 @@ if response.status_code == 200:
     df = pd.DataFrame(chicago_hospitals, columns=["Hospital Name", "ZIP Code"])
      
     # Define output path and ensure directory exists
-    output_dir = "../data/raw/Hospitals"
+    output_dir = "data/raw/Hospitals"
     os.makedirs(output_dir, exist_ok=True)
     
     output_file = os.path.join(output_dir, "hospitals.csv")

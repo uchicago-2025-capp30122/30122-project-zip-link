@@ -30,11 +30,10 @@ def calculate_accessibility_index(path):
     # Compute Accessibility Index using normalized values
     df["Accessibility Index"] = df["total_normalized_services"] / df["Population"]
 
-    # Debugging: Print min/max values
     min_index = df["Accessibility Index"].min()
     max_index = df["Accessibility Index"].max()
     
-    # Round (max - min) to 6 decimal places for better precision
+    # Round (max - min) to 6 decimal places 
     max_min_diff = round(max_index - min_index, 6)
 
     # Normalize the Accessibility Index 
