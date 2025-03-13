@@ -12,7 +12,7 @@ Zip & Link analyzes the relationship between essential services and housing affo
 ## How to Run
 
 1. Clone the repo to this project using the url on GitHub
-2. In the root directory, run uv sync to install all the necessary packages used for this project
+2. In the root directory, run ```uv sync``` to install all the necessary packages used for this project
 3. Run 
 ```
 uv run python -m cleaning_analysis.zipatlas_data
