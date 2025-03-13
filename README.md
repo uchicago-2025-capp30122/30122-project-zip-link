@@ -54,6 +54,10 @@ City of Chicago. “Parks - Chicago Park District Park Boundaries (Current) | Ci
 
 Chicago Public Schools. “Search | Chicago Public Schools.” Cps.edu, CPS, 2025, [www.cps.edu/search/?pageNumber=1&context=Schools&sortId=a-z](https://www.cps.edu/search/?pageNumber=1&context=Schools&sortId=a-z). Accessed 12 Mar. 2025.
 
+#### 8. Population
+Illinois Demographics. “Illinois ZIP Codes by Population.” Illinois-Demographics.com, 2025,[www.illinois-demographics.com/zip_codes_by_population](https://www.illinois-demographics.com/zip_codes_by_population). Accessed 12 Mar. 2025.  
+
+
 ### Data Integration
 All datasets are linked by ZIP code. 
 
