@@ -1,15 +1,15 @@
 # Zip & Link
 
-### Team Members: Vyshnavi Voleti, Nelu Wijegunasekera, Pragya Khanal
+#### Team Members: Vyshnavi Voleti, Nelu Wijegunasekera, Pragya Khanal
 
-## Overview
+### Overview
 Zip & Link analyzes the relationship between essential services and housing affordability across neighborhoods in Chicago. The project explores how accessibility to key services—such as healthcare, public education, public transport, grocery stores, and parks—affects median property prices and other economic indicators. The project involves web scraping, bulk data downloads, data cleaning and preprocessing, and an analysis framework to generate an Accessibility Index for each ZIP code. This index is meant to help users understand the impact of essential services on housing affordability and highlight areas that require better urban planning. Our initial hypothesis was that the housing prices were positively correlated with the Accessibility Index and in order to test and better visualize this, we developed 3 key visualizations on Dash: a choropleth map, a scatterplot and horizontal bar plots that help compare 2 specific zip codes. Interestingly, we found that the converse of our hypothesis was true. 
 
-## Demonstration of Project
+### Demonstration of Project
 
 [Demonstration of Zip & Link](https://www.youtube.com/watch?v=O-PwBeorkRI&ab_channel=Vyshnavi)
 
-## How to Run
+### How to Run
 
 1. Clone the repo to this project using the url on GitHub
 2. In the root directory, run ```uv sync``` to install all the necessary packages used for this project
@@ -29,7 +29,7 @@ tests/Hospitals_test.py
 ```
 We have provided tests for the ingestion of all our data sources, data reconciliation as well as data visualizations.
 
-## Data Citations 
+### Data Citations 
 
 #### 1. Housing Data
 
@@ -61,8 +61,8 @@ City of Chicago. “Parks - Chicago Park District Park Boundaries (Current) | Ci
 
 Chicago Public Schools. “Search | Chicago Public Schools.” Cps.edu, CPS, 2025, [www.cps.edu/search/?pageNumber=1&context=Schools&sortId=a-z](https://www.cps.edu/search/?pageNumber=1&context=Schools&sortId=a-z). Accessed 12 Mar. 2025.
 
-## Data Integration
+### Data Integration
 All datasets are linked by ZIP code. 
 
-## Acknowledgement 
+### Acknowledgement 
 Thank you so much to James Turk, our CAPP 122 lecturer, and to Hieu Nguyen, our CAPP 122 TA, for supporting and helping us as we set out on this project. We couldn't have done this without them, and are incredibly grateful :) Hope you enjoy exploring our visualization!
