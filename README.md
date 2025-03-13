@@ -12,12 +12,13 @@ Zip & Link analyzes the relationship between essential services and housing affo
 ### How to Run
 
 1. Clone the repo to this project using the url on GitHub
-2. In the root directory, run ```uv sync``` to install all the necessary packages used for this project
-3. Run ```uv run python -m cleaning_analysis.zipatlas_data``` to scrape the data, clean and preprocess the data and obtain the final dataset. 
+2. From the zip_link director, run ```uv sync``` to install all the necessary packages 
+3. Run ```uv run python -m cleaning_analysis.zipatlas_data``` to scrape the data, clean and preprocess the data and obtain the final dataset
 4. Next, run ```uv run python -m visualization.merge_visualization``` to get the Dash app running on http://127.0.0.1:8051
 5. Select different variables, explore how the distribution across Chicago changes, visualize how the housing-related variables are related to the Accessibility Index on the scatterplot, and compare 2 different zip codes!
 6. To ensure all our data is running correctly, run our tests 
-```uv run pytest tests/final_join_tests.py 
+```
+uv run pytest tests/final_join_tests.py 
 tests/healthctr_tests.py 
 tests/parks_tests.py 
 tests/grocery_stores_tests.py 
@@ -37,27 +38,27 @@ ZipAtlas.com. “Highest Median Property Prices in Chicago by Zip Code in 2025 |
 
 #### 2. Healthcare Data
 
-#### Community Health Centers
+##### Community Health Centers
 City of Chicago Health Facilities:
 chicago.gov. https://www.chicago.gov/content/dam/city/depts/cdph/policy_planning/PP_Web%20Health%20Care%20Facilities%20by%20Zip%20Code.pdf. Accessed 12 Mar. 2025. 
  
 HRSA Find a Health Center: 
 Hrsa.gov. “Find a Health Center.” Hrsa.gov, Hrsa.gov, 2025, [findahealthcenter.hrsa.gov/?zip=Chicago%252C%2BIL%252C%2BUSA&radius=5&incrementalsearch=true](https://findahealthcenter.hrsa.gov/?zip=Chicago%252C%2BIL%252C%2BUSA&radius=5&incrementalsearch=true). Accessed 12 Mar. 2025. 
 
-#### 3. Hospitals
+##### Hospitals
 Cook County Sheriff's Office. “Hospitals in Cook County.” Cook County Sheriff’s Office, Cook County Sheriff’s Office, Aug. 2017, [cookcountysheriffil.gov/departments/c-c-s-p-d/cemeteries/hospitals-cook-county/](https://cookcountysheriffil.gov/departments/c-c-s-p-d/cemeteries/hospitals-cook-county/). Accessed 12 Mar. 2025. 
 
-#### 4. Transportation Data
+#### 3. Transportation Data
 Institute of Social Research, University of Michigan. “National Neighborhood Data Archive (NaNDA): Public Transit Stops by Census Tract and ZIP Code Tabulation Area, United States, 2016-2018 and 2024 | ICPSR.” Umich.edu, Umich.edu, 2016, [archive.icpsr.umich.edu/view/studies/38605/data-documentation](https://archive.icpsr.umich.edu/view/studies/38605/data-documentation). Accessed 12 Mar. 2025.
 
 
-#### 5. Grocery Stores Data
+#### 4. Grocery Stores Data
 City of Chicago. “Grocery Store Status Map | City of Chicago | Data Portal.” Data.cityofchicago.org, Cityofchicago, [data.cityofchicago.org/Health-Human-Services/Grocery-Store-Status-Map/rish-pa6g.](https://data.cityofchicago.org/Health-Human-Services/Grocery-Store-Status-Map/rish-pa6g)
 
-#### 6. Parks & Green Spaces
+#### 5. Parks & Green Spaces
 City of Chicago. “Parks - Chicago Park District Park Boundaries (Current) | City of Chicago | Data Portal.” Cityofchicago.org, Cityofchicago, 2018, [data.cityofchicago.org/Parks-Recreation/Parks-Chicago-Park-District-Park-Boundaries-curren/ej32-qgdr.](https://data.cityofchicago.org/Parks-Recreation/Parks-Chicago-Park-District-Park-Boundaries-curren/ej32-qgdr)
 
-#### 7. Education Data (Schools)
+#### 6. Education Data (Schools)
 
 Chicago Public Schools. “Search | Chicago Public Schools.” Cps.edu, CPS, 2025, [www.cps.edu/search/?pageNumber=1&context=Schools&sortId=a-z](https://www.cps.edu/search/?pageNumber=1&context=Schools&sortId=a-z). Accessed 12 Mar. 2025.
 
