@@ -12,7 +12,7 @@ Zip & Link analyzes the relationship between essential services and housing affo
 ### How to Run
 
 1. Clone the repo to this project using the url on GitHub
-2. In the root directory, run ```uv sync``` to install all the necessary packages used for this project
+2. From the zip_link director, run ```uv sync``` to install all the necessary packages 
 3. Run ```uv run python -m cleaning_analysis.zipatlas_data``` to scrape the data, clean and preprocess the data and obtain the final dataset
 4. Next, run ```uv run python -m visualization.merge_visualization``` to get the Dash app running on http://127.0.0.1:8051
 5. Select different variables, explore how the distribution across Chicago changes, visualize how the housing-related variables are related to the Accessibility Index on the scatterplot, and compare 2 different zip codes!
