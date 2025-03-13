@@ -10,7 +10,9 @@ HEADERS = {"Content-Type": "application/json"}
 
 def fetch_data(page_number):
     """
-    fetching data from the API
+    Fetching data from the API.
+    Input: the individual page number
+    Output: information in json
     """
 
     payload = {
@@ -34,7 +36,9 @@ def fetch_data(page_number):
 
 def extract_zip(address):
     """
-    extracting the zip code from the address
+    Extracting the zip code from the address.
+    Input: an address
+    Output: address, zip code
     """
     if not address or "," not in address:
         return "N/A", "N/A"
@@ -43,13 +47,14 @@ def extract_zip(address):
     street_address = parts[0].strip()
     rest = parts[-1].strip()
 
-    #extracting zip cpde
     zip_code = rest.split()[-1] if rest.split()[-1].isdigit() else "N/A"
     return street_address, rest, zip_code
 
 def scrape_api(total_pages=65):
     """
-    scraping the data from the pages
+    Iterating through all the pages:
+    Input: 65 (total nmumber of pages)
+    Output: DataFrame with the data
     """
     all_results = []
 
@@ -59,8 +64,8 @@ def scrape_api(total_pages=65):
 
         if data and "results" in data:
             for school in data["results"]:
-                title = school.get("title", "N/A")  # Extract school name
-                full_address = school.get("address", "N/A")  # Extract full address
+                title = school.get("title", "N/A")
+                full_address = school.get("address", "N/A")
                 
                 street, rest, zip_code = extract_zip(full_address)
 
@@ -73,17 +78,17 @@ def scrape_api(total_pages=65):
         else:
             print(f"Skipping page {page} due to error or no results.")
 
-        time.sleep(1)  # Respectful rate-limiting
-    return pd.DataFrame(all_results)  # Convert to DataFrame
+        time.sleep(1)
+    return pd.DataFrame(all_results)
 
 
 if __name__ == "__main__":
     df = scrape_api(total_pages=65)
 
     output_dir = "../data/raw/Schools"
-    os.makedirs(output_dir, exist_ok=True)  # Ensure directory exists
+    os.makedirs(output_dir, exist_ok=True)
     output_file = os.path.join(output_dir, "schools_data.csv")
 
-    #DataFrame to CSV
+    #df to CSV
     df.to_csv(output_file, index=False)
     print(f"Data saved to {output_file}")
